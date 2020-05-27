@@ -21,6 +21,7 @@ namespace DSGUI
         private readonly float iconScale;
 
         private readonly Texture2D menuIcon = ContentFinder<Texture2D>.Get("UI/Buttons/MainButtons/Menu");
+        private readonly Vector3 cpos;
         private readonly Pawn pawn;
         private readonly Thing target;
         private readonly Color thingColor = Color.white;
@@ -38,6 +39,7 @@ namespace DSGUI
             target = t.GetInnerIfMinified();
             label = t.Label;
             pawn = p;
+            cpos = clickPos;
 
             try
             {
@@ -89,6 +91,12 @@ namespace DSGUI
             {
                 if (DSGUI.Elements.ButtonImageFittedScaled(actionRect, menuIcon, iconScale))
                 {
+                    orders.Clear();
+                
+                    GlobalStorage.currThing = target;
+                    AHlO.Invoke(null, new object[] {cpos, pawn, orders});
+                    GlobalStorage.currThing = null;
+                    
                     DSGUI.Elements.TryMakeFloatMenu(pawn, orders, target.LabelCapNoCount);
                 }
             }

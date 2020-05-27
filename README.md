@@ -1,2 +1,2 @@
-# RW_HuntersUseMelee
-A small mod that allows hunters to make use of melee weapons to do their job as well as ranged.
+# RW_DSGUI
+Replaces DeepStorage's right click with a fancy new UI!
