@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<LanguageData>
+  <DSGUI_Label>DeepStorage GUI</DSGUI_Label>
+  <DSGUI_Warn>Requires DeepStorage's right click to be disabled!</DSGUI_Warn>
+  <DSGUI_IconScaling>Icon Scaling</DSGUI_IconScaling>
+  <DSGUI_BoxHeight>Scrollbox Item Height</DSGUI_BoxHeight>
+</LanguageData>

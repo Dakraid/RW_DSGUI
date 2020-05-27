@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+    <name>DeepStorage GUI</name>
+    <author>Netrve</author>
+    <supportedVersions>
+        <li>1.1</li>
+    </supportedVersions>
+    <modDependencies>
+        <li>
+            <packageId>brrainz.harmony</packageId>
+            <displayName>Harmony</displayName>
+            <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+        </li>
+        <li>
+            <packageId>LWM.DeepStorage</packageId>
+            <displayName>LWM's Deep Storage</displayName>
+            <steamWorkshopUrl>steam://url/CommunityFilePage/1617282896</steamWorkshopUrl>
+        </li>
+    </modDependencies>
+    <packageId>netrve.dsgui</packageId>
+    <description>Replaces DeepStorage's right click with a fancy new UI!</description>
+    <loadAfter>
+        <li>brrainz.harmony</li>
+        <li>ludeon.rimWorld</li>
+        <li>ludeon.rimWorld.royalty</li>
+        <li>LWM.DeepStorage</li>
+    </loadAfter>
+</ModMetaData>
