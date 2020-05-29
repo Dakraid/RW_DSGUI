@@ -172,7 +172,7 @@ namespace DSGUI
 
                 var flag = true;
 
-                var floatMenuOption = (FloatMenuOption)null;
+                var floatMenuOption = (FloatMenuOption) null;
                 foreach (var option in options)
                 {
                     if (option.Disabled || !option.autoTakeable)
@@ -191,7 +191,7 @@ namespace DSGUI
                 }
                 else
                 {
-                    var floatMenuMap = new FloatMenu(options, title) { givesColonistOrders = true };
+                    var floatMenuMap = new FloatMenu(options, title) {givesColonistOrders = true};
                     Find.WindowStack.Add(floatMenuMap);
                 }
             }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -10,6 +12,38 @@ namespace DSGUI
     {
         public static Thing currThing = null;
         public static Thing lastThing = null;
+        public static bool pickUploaded;
+    }
+    
+    [StaticConstructorOnStartup]
+    public static class DSGUIMain
+    {
+        static DSGUIMain() 
+        {
+            LWM.DeepStorage.Settings.useDeepStorageRightClickLogic = false;
+            GlobalStorage.pickUploaded = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "Pick Up And Haul" || m.PackageId == "mehni.pickupandhaul");
+            
+            if (GlobalStorage.pickUploaded)
+                Log.Warning("[DSGUI] WARNING: Pick Up and Haul is currently not compatible with DSGUI!");
+
+            /*
+            if (!GlobalStorage.pickUploaded) return;
+            
+            try
+            {
+                var pickUpTrans = AccessTools.Method(typeof(PickUpAndHaul.HarmonyPatches), "FloatMenuMakerMad_AddHumanlikeOrders_Transpiler");
+                var ahloInfos = Harmony.GetPatchInfo(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"));
+                var target = ahloInfos.Transpilers.First(x => x.PatchMethod == pickUpTrans)?.PatchMethod;
+
+                HarmonyPatches.harmony.Unpatch(target, pickUpTrans);
+                Log.Message("[DSGUI] Unpatched Pick Up and Haul Transpiler");
+            }
+            catch (Exception e)
+            {
+                Log.Warning("[DSGUI] Could not unpatch Pick Up and Haul Transpiler. Exception:\n" + e);
+            }
+            */
+        }
     }
     
     public partial class DSGUI

@@ -21,8 +21,8 @@ namespace DSGUI
         private readonly float iconScale;
 
         private readonly Texture2D menuIcon = ContentFinder<Texture2D>.Get("UI/Buttons/MainButtons/Menu");
-        private readonly Vector3 cpos;
         private readonly Pawn pawn;
+        private readonly Thing origTarget;
         private readonly Thing target;
         private readonly Color thingColor = Color.white;
         private readonly Texture2D thingIcon;
@@ -36,10 +36,10 @@ namespace DSGUI
         {
             iconScale = DSGUIMod.settings.DSGUI_IconScaling;
             height = boxHeight;
+            origTarget = t;
             target = t.GetInnerIfMinified();
             label = t.Label;
             pawn = p;
-            cpos = clickPos;
 
             try
             {
@@ -48,7 +48,7 @@ namespace DSGUI
             }
             catch
             {
-                Log.Warning($"[LWM] Thing {t.def.defName} has no UI icon.");
+                Log.Warning($"[DSGUI] Thing {t.def.defName} has no UI icon.");
                 thingIcon = Texture2D.blackTexture;
             }
             
@@ -76,11 +76,11 @@ namespace DSGUI
             
             if (DSGUI.Elements.ButtonInvisibleLabeled(Color.white, GameFont.Small, graphicRect.RightPart(0.85f), label.CapitalizeFirst()))
             {
-                if (pawn.Map != target.Map)
+                if (pawn.Map != origTarget.Map)
                     return;
                 
                 Find.Selector.ClearSelection();
-                Find.Selector.Select(target);
+                Find.Selector.Select(origTarget);
                 Find.WindowStack.TryRemove(typeof(DSGUI_ListModal));
             }
 
@@ -89,16 +89,7 @@ namespace DSGUI
 
             if (orders.Count > 0)
             {
-                if (DSGUI.Elements.ButtonImageFittedScaled(actionRect, menuIcon, iconScale))
-                {
-                    orders.Clear();
-                
-                    GlobalStorage.currThing = target;
-                    AHlO.Invoke(null, new object[] {cpos, pawn, orders});
-                    GlobalStorage.currThing = null;
-                    
-                    DSGUI.Elements.TryMakeFloatMenu(pawn, orders, target.LabelCapNoCount);
-                }
+                if (DSGUI.Elements.ButtonImageFittedScaled(actionRect, menuIcon, iconScale)) DSGUI.Elements.TryMakeFloatMenu(pawn, orders, target.LabelCapNoCount);
             }
             else
             {

@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using System.Globalization;
+using Verse;
 using UnityEngine;
 
 namespace DSGUI
@@ -7,12 +8,14 @@ namespace DSGUI
     {
         public float DSGUI_IconScaling = 1f;
         public float DSGUI_BoxHeight = 32f;
+        public int DSGUI_FontSize = 1;
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref DSGUI_IconScaling, "DSGUI_IconScalingLabel");
             Scribe_Values.Look(ref DSGUI_BoxHeight, "DSGUI_BoxHeightLabel");
+            Scribe_Values.Look(ref DSGUI_FontSize, "DSGUI_FontSizeLabel");
         }
     }
     
@@ -30,18 +33,32 @@ namespace DSGUI
             return "DSGUI_Label".Translate();
         }
 
+        private static void ResetSettings()
+        {
+            settings.DSGUI_BoxHeight = 32f;
+            settings.DSGUI_IconScaling = 1f;
+        }
+
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            var listing_Standard = new Listing_Standard();
-            listing_Standard.Begin(inRect);
-            listing_Standard.verticalSpacing = 8f;
-            listing_Standard.Label("DSGUI_Warn".Translate());
-            listing_Standard.GapLine();
-            listing_Standard.Label("DSGUI_IconScaling".Translate());
-            settings.DSGUI_IconScaling = listing_Standard.Slider(settings.DSGUI_IconScaling, 0f, 1f);
-            listing_Standard.Label("DSGUI_BoxHeight".Translate());
-            settings.DSGUI_BoxHeight = listing_Standard.Slider(settings.DSGUI_BoxHeight, 4f, 64f);
-            listing_Standard.End();
+            var ls = new Listing_Standard();
+            ls.Begin(inRect);
+            ls.verticalSpacing = 8f;
+            ls.Label("DSGUI_Warn".Translate());
+            ls.GapLine();
+            
+            ls.LabelDouble("DSGUI_IconScaling".Translate(), settings.DSGUI_IconScaling.ToString(CultureInfo.CurrentCulture));
+            settings.DSGUI_IconScaling = ls.Slider(settings.DSGUI_IconScaling, 0f, 2f);
+            
+            ls.LabelDouble("DSGUI_BoxHeight".Translate(), settings.DSGUI_BoxHeight.ToString(CultureInfo.CurrentCulture));
+            settings.DSGUI_BoxHeight = ls.Slider(settings.DSGUI_BoxHeight, 4f, 64f);
+            
+            ls.Label("DSGUI_FontSize".Translate());
+            // ls.RadioButton_NewTemp("DSGUI_FontTiny".Translate(),)
+            
+            ls.GapLine();
+            if (ls.ButtonText("DSGUI_ResetBtn".Translate())) ResetSettings();
+            ls.End();
             settings.Write();
         }
     }

@@ -1,22 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using HarmonyLib;
+using JetBrains.Annotations;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace DSGUI
 {
+    [UsedImplicitly]
     [StaticConstructorOnStartup]
-    static class HarmonyPatches
+    public static class HarmonyPatches
     {
+        public static Harmony harmony = new Harmony("net.netrve.dsgui");
+        
         static HarmonyPatches()
         {
-            var harmony = new Harmony("net.netrve.dsgui");
-            
             // We patch all as we use annotations
             harmony.PatchAll();
         }
-        
+
         [HarmonyPatch(typeof(FloatMenuMakerMap), "TryMakeFloatMenu")]
         internal static class Patch_TryMakeFloatMenu
         {
