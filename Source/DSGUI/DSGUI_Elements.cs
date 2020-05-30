@@ -71,6 +71,31 @@ namespace DSGUI
             }
         }
         
+        public class Listing_Extended : Listing_Standard
+        {
+            public void CheckboxNonLabeled(ref bool checkOn, string tooltip = null, bool leftAligned = false)
+            {
+                var rect = GetRect(Text.LineHeight);
+                if (!tooltip.NullOrEmpty())
+                {
+                    if (Mouse.IsOver(rect))
+                        Widgets.DrawHighlight(rect);
+                    TooltipHandler.TipRegion(rect, (TipSignal) tooltip);
+                }
+
+                float x;
+            
+                if (leftAligned)
+                    x = rect.x;
+                else
+                    x = rect.x + rect.width - 24f;
+
+                Widgets.Checkbox(x, rect.y, ref checkOn);
+            
+                Gap(verticalSpacing);
+            }
+        }
+        
         public class Elements
         {
             // Credits to Dubwise for this awesome function

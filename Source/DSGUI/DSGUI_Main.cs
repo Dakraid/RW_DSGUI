@@ -11,8 +11,6 @@ namespace DSGUI
     public static class GlobalStorage
     {
         public static Thing currThing = null;
-        public static Thing lastThing = null;
-        public static bool pickUploaded;
     }
     
     [StaticConstructorOnStartup]
@@ -21,33 +19,21 @@ namespace DSGUI
         static DSGUIMain() 
         {
             LWM.DeepStorage.Settings.useDeepStorageRightClickLogic = false;
-            GlobalStorage.pickUploaded = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "Pick Up And Haul" || m.PackageId == "mehni.pickupandhaul");
-            
-            if (GlobalStorage.pickUploaded)
-                Log.Warning("[DSGUI] WARNING: Pick Up and Haul is currently not compatible with DSGUI!");
-
-            /*
-            if (!GlobalStorage.pickUploaded) return;
-            
-            try
-            {
-                var pickUpTrans = AccessTools.Method(typeof(PickUpAndHaul.HarmonyPatches), "FloatMenuMakerMad_AddHumanlikeOrders_Transpiler");
-                var ahloInfos = Harmony.GetPatchInfo(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"));
-                var target = ahloInfos.Transpilers.First(x => x.PatchMethod == pickUpTrans)?.PatchMethod;
-
-                HarmonyPatches.harmony.Unpatch(target, pickUpTrans);
-                Log.Message("[DSGUI] Unpatched Pick Up and Haul Transpiler");
-            }
-            catch (Exception e)
-            {
-                Log.Warning("[DSGUI] Could not unpatch Pick Up and Haul Transpiler. Exception:\n" + e);
-            }
-            */
         }
     }
     
     public partial class DSGUI
     {
+        public static List<Thing> GetThingList(IntVec3 c, Pawn pawn)
+        {
+            return GlobalStorage.currThing == null ? c.GetThingList(pawn.Map) : new List<Thing> {GlobalStorage.currThing};
+        }
+            
+        public static Thing GetFirstItem(IntVec3 c, Pawn pawn)
+        {
+            return GlobalStorage.currThing == null ? c.GetFirstItem(pawn.Map) : GlobalStorage.currThing;
+        }
+        
         public static bool Create(Vector3 clickPosition, Pawn pawn)
         {
             var c = IntVec3.FromVector3(clickPosition);

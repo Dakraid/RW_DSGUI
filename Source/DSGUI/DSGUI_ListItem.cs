@@ -55,6 +55,9 @@ namespace DSGUI
             GlobalStorage.currThing = target;
             AHlO.Invoke(null, new object[] {clickPos, pawn, orders});
             GlobalStorage.currThing = null;
+
+            if (DSGUIMod.settings.DSGUI_SortOrders && orders.Count > 1)
+                orders = orders.OrderBy(x => x.Label).ToList();
         }
 
         public void DoDraw(Rect inRect, float y, bool altBG = false)
@@ -103,8 +106,8 @@ namespace DSGUI
                 Widgets.DrawHighlight(actionRect);
 
             DSGUI.Elements.SeparatorVertical(graphicRect.xMax, height * y, height);
-            
-            if (y != 0)
+
+            if (y != 0 && DSGUIMod.settings.DSGUI_DrawDividers)
                 DSGUI.Elements.SeparatorHorizontal(0f, height * y, listRect.width);
         }
     }

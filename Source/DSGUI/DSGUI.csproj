@@ -50,8 +50,8 @@
             <HintPath>..\..\..\..\..\..\workshop\content\294100\1617282896\1.1\Assemblies\IHoldMultipleThings.dll</HintPath>
             <Private>False</Private>
         </Reference>
-        <Reference Include="LWM.DeepStorage, Version=1.1.0.40459, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\LWM.DeepStorage\1.1\Assemblies\LWM.DeepStorage.dll</HintPath>
+        <Reference Include="LWM.DeepStorage, Version=1.0.0.41630, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\..\..\..\References\LWM.DeepStorage.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="PickUpAndHaul, Version=0.1.0.5, Culture=neutral, PublicKeyToken=null">

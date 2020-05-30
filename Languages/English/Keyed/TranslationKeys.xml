@@ -3,6 +3,10 @@
 <LanguageData>
   <DSGUI_Label>Netrve's DeepStorage GUI</DSGUI_Label>
   <DSGUI_Warn>Requires DeepStorage's right click to be disabled!</DSGUI_Warn>
+  <DSGUI_AdvWarn>This setting is for advanced users, unless you run into issues do NOT turn this on!</DSGUI_AdvWarn>
+  <DSGUI_UseTranspiler>Use Transpiler</DSGUI_UseTranspiler>
+  <DSGUI_SortOrders>Sort Orders</DSGUI_SortOrders>
+  <DSGUI_DrawDividers>Draw Divider Between Rows</DSGUI_DrawDividers>
   <DSGUI_IconScaling>Icon Scaling</DSGUI_IconScaling>
   <DSGUI_BoxHeight>Scrollbox Item Height</DSGUI_BoxHeight>
   <DSGUI_FontSize>Font Size</DSGUI_FontSize>
