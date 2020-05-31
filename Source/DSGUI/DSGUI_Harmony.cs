@@ -69,14 +69,14 @@ namespace DSGUI
             }
         }
 
-        public static List<Thing> GetThingList(this IntVec3 c, Pawn pawn)
+        public static List<Thing> GetThingList(this IntVec3 c, Map map)
         {
-            return GlobalStorage.currThing == null ? c.GetThingList(pawn.Map) : new List<Thing> {GlobalStorage.currThing};
+            return GlobalStorage.currThing == null ? c.GetThingList(map) : new List<Thing> {GlobalStorage.currThing};
         }
             
-        public static Thing GetFirstItem(this IntVec3 c, Pawn pawn)
+        public static Thing GetFirstItem(this IntVec3 c, Map map)
         {
-            return GlobalStorage.currThing == null ? c.GetFirstItem(pawn.Map) : GlobalStorage.currThing;
+            return GlobalStorage.currThing == null ? c.GetFirstItem(map) : GlobalStorage.currThing;
         }
         
         [HarmonyPatch(typeof(FloatMenuMakerMap), "AddHumanlikeOrders")]
@@ -96,30 +96,9 @@ namespace DSGUI
             [HarmonyTranspiler]
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                var instructionList = instructions.ToList();
-
-                foreach (var instruction in instructionList)
-                {
-                    if (instruction.Calls(getFI))
-                    {
-                        instruction.opcode = OpCodes.Call;
-                        instruction.operand = dsguiFI;
-                        yield return instruction;
-                        
-                        continue;
-                    } 
-                    
-                    if (instruction.Calls(getTL))
-                    {
-                        instruction.opcode = OpCodes.Call;
-                        instruction.operand = dsguiTL;
-                        yield return instruction;
-                        
-                        continue;
-                    }
-                    
-                    yield return instruction;
-                }
+                return instructions
+                    .MethodReplacer(getFI, dsguiFI)
+                    .MethodReplacer(getTL, dsguiTL);
             }
         }
     }
