@@ -50,12 +50,7 @@ namespace DSGUI
                 thingIcon = Texture2D.blackTexture;
             }
 
-            GlobalStorage.currThing = target;
             AHlO.Invoke(null, new object[] {clickPos, pawn, orders});
-            GlobalStorage.currThing = null;
-
-            if (DSGUIMod.settings.DSGUI_SortOrders && orders.Count > 1)
-                orders = orders.OrderBy(x => x.Label).ToList();
 
             style = new GUIStyle(Text.CurFontStyle)
             {

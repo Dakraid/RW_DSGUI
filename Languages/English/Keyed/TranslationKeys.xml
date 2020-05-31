@@ -3,7 +3,7 @@
 <LanguageData>
   <DSGUI_Label>Netrve's DeepStorage GUI</DSGUI_Label>
   <DSGUI_Warn>Requires DeepStorage's right click to be disabled!</DSGUI_Warn>
-  <DSGUI_AdvWarn>[Not Functional Yet] This setting is for advanced users. Unless you know what you are doing or have been advised to use it, leave it.</DSGUI_AdvWarn>
+  <DSGUI_AdvWarn>This setting is for advanced users. Unless you know what you are doing or have been advised to use it, leave it.</DSGUI_AdvWarn>
   <DSGUI_UseTranspiler>Use Transpiler instead of Prefix Method</DSGUI_UseTranspiler>
   <DSGUI_SortOrders>Sort Orders</DSGUI_SortOrders>
   <DSGUI_SavePosSize>Save last set window size and position</DSGUI_SavePosSize>

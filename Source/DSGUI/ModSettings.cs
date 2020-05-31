@@ -32,6 +32,8 @@ namespace DSGUI
     internal class DSGUIMod : Mod
     {
         public static DSGUISettings settings;
+        private Vector2 scrollPosition;
+        private float scrollHeight;
 
         public DSGUIMod(ModContentPack content) : base(content)
         {
@@ -56,12 +58,17 @@ namespace DSGUI
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            var ls = new DSGUI.Listing_Extended();
-            ls.Begin(inRect);
-            ls.verticalSpacing = 8f;
-            ls.Label("DSGUI_Warn".Translate());
-
+            var ls = new DSGUI.Listing_Extended {verticalSpacing = 8f};
+            var viewRect = new Rect(0, 0, inRect.width - 16f, scrollHeight);
+            
+            ls.BeginScrollView(inRect, ref scrollPosition, ref viewRect);
+            GUI.BeginGroup(viewRect);
             ls.GapLine();
+            
+            ls.Label("DSGUI_Warn".Translate());
+            
+            ls.GapLine();
+
             ls.Label("DSGUI_SortOrders".Translate());
             ls.CheckboxNonLabeled(ref settings.DSGUI_SortOrders);
             
@@ -84,16 +91,23 @@ namespace DSGUI
             settings.DSGUI_BoxHeight = ls.Slider(settings.DSGUI_BoxHeight, 4f, 64f);
 
             ls.GapLine();
-            if (ls.ButtonText("DSGUI_ResetBtn".Translate())) ResetSettings();
-
-            ls.GapLine();
+            
             ls.Label("DSGUI_AdvWarn".Translate());
 
             ls.Label("DSGUI_UseTranspiler".Translate());
             ls.CheckboxNonLabeled(ref settings.DSGUI_UseTranspiler);
 
             ls.GapLine();
-            ls.End();
+            
+            if (ls.ButtonText("DSGUI_ResetBtn".Translate())) ResetSettings();
+
+            ls.GapLine();
+
+            scrollHeight = ls.CurHeight;
+            
+            GUI.EndGroup();
+            ls.EndScrollView(ref viewRect);
+
             settings.Write();
         }
     }
