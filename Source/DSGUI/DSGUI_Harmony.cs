@@ -69,12 +69,12 @@ namespace DSGUI
             }
         }
 
-        public static List<Thing> GetThingList(this IntVec3 c, Map map)
+        public static List<Thing> dsguiThingList(this IntVec3 c, Map map)
         {
             return GlobalStorage.currThing == null ? c.GetThingList(map) : new List<Thing> {GlobalStorage.currThing};
         }
             
-        public static Thing GetFirstItem(this IntVec3 c, Map map)
+        public static Thing dsguiFirstItem(this IntVec3 c, Map map)
         {
             return GlobalStorage.currThing == null ? c.GetFirstItem(map) : GlobalStorage.currThing;
         }
@@ -85,8 +85,8 @@ namespace DSGUI
             private static readonly MethodInfo getFI = AccessTools.Method(typeof(GridsUtility), nameof(GridsUtility.GetFirstItem));
             private static readonly MethodInfo getTL = AccessTools.Method(typeof(GridsUtility), nameof(GridsUtility.GetThingList));
 
-            private static readonly MethodInfo dsguiFI = AccessTools.Method(typeof(HarmonyPatches), nameof(GetFirstItem));
-            private static readonly MethodInfo dsguiTL = AccessTools.Method(typeof(HarmonyPatches), nameof(GetThingList));
+            private static readonly MethodInfo dsguiFI = AccessTools.Method(typeof(HarmonyPatches), nameof(dsguiFirstItem));
+            private static readonly MethodInfo dsguiTL = AccessTools.Method(typeof(HarmonyPatches), nameof(dsguiThingList));
             
             public static bool Prepare(Harmony instance) 
             {
