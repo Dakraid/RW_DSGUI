@@ -7,23 +7,24 @@ namespace DSGUI
 {
     public class DSGUI_ListModal : Window
     {
-        private static float boxHeight = 48f;
         private const float searchClearPadding = 16f;
+        private static float boxHeight = 48f;
         private static readonly Vector2 defaultScreenSize = new Vector2(1920, 1080);
         private static readonly Vector2 modalSize = new Vector2(360, 480);
 
         private static Vector2 scrollPosition;
         private static float RecipesScrollHeight;
         private static string searchString = "";
-
-        private readonly Vector3 cpos;
         private static Pawn pawn;
         private static List<Thing> thingList;
+
+        private readonly Vector3 cpos;
         private readonly DSGUI_ListItem[] rows;
         private Rect GizmoListRect;
 
         public DSGUI_ListModal(Pawn p, List<Thing> lt, Vector3 pos)
         {
+            onlyOneOfTypeAllowed = true;
             closeOnClickedOutside = true;
             doCloseX = true;
             resizeable = true;
@@ -39,11 +40,32 @@ namespace DSGUI
             thingList = new List<Thing>(lt);
 
             rows = new DSGUI_ListItem[thingList.Count];
-            
+
             boxHeight = DSGUIMod.settings.DSGUI_BoxHeight;
         }
 
         public override Vector2 InitialSize => new Vector2(modalSize.x * (Screen.width / defaultScreenSize.x), modalSize.y * (Screen.height / defaultScreenSize.y));
+        
+        protected override void SetInitialSizeAndPosition()
+        {
+            var windowSize = GlobalStorage.savedSize.Equals(new Vector2(0, 0)) ? InitialSize : GlobalStorage.savedSize;
+            var windowPos = new Vector2((float) ((UI.screenWidth - windowSize.x) / 2.0), (float) ((UI.screenHeight - windowSize.y) / 2.0));
+            
+            if (!GlobalStorage.savedPos.Equals(new Vector2(0, 0)))
+                windowPos = GlobalStorage.savedPos;
+
+            windowRect = new Rect(windowPos.x, windowPos.y, windowSize.x, windowSize.y);
+            
+            windowRect = windowRect.Rounded();
+        }
+
+        public override void PreClose()
+        {
+            base.PreClose();
+            GlobalStorage.savedSize = windowRect.size;
+            GlobalStorage.savedPos = windowRect.position;
+        }
+
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -72,7 +94,7 @@ namespace DSGUI
                 ++j;
                 var viewElement = new Rect(0.0f, boxHeight * i, inRect.width, boxHeight);
                 if (!viewElement.Overlaps(GizmoListRect)) continue;
-                
+
                 if (rows[i] == null)
                     try
                     {
@@ -85,8 +107,8 @@ namespace DSGUI
                         Log.Warning(ex.ToString());
                     }
 
-            
-                if (searchString.NullOrEmpty()) 
+
+                if (searchString.NullOrEmpty())
                 {
                     rows[i].DoDraw(listRect, i);
                 }
@@ -98,7 +120,7 @@ namespace DSGUI
                 }
             }
 
-            
+
             RecipesScrollHeight = boxHeight * thingList.Count;
 
             GUI.EndGroup();

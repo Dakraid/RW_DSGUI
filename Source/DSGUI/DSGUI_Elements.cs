@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace DSGUI
 {
@@ -21,15 +23,15 @@ namespace DSGUI
                 return returnList;
             }
         }
-        
+
         // TODO: Possibly verify the options based on the functionality as implemented in FloatMenuMap
-        public class Helper 
+        public class Helper
         {
             private static bool OptionsMatch(FloatMenuOption a, FloatMenuOption b)
             {
                 return a.Label == b.Label;
             }
-            
+
             public static bool StillValid(
                 FloatMenuOption opt,
                 IEnumerable<FloatMenuOption> curOpts,
@@ -70,7 +72,7 @@ namespace DSGUI
                 }
             }
         }
-        
+
         public class Listing_Extended : Listing_Standard
         {
             public void CheckboxNonLabeled(ref bool checkOn, string tooltip = null, bool leftAligned = false)
@@ -84,18 +86,27 @@ namespace DSGUI
                 }
 
                 float x;
-            
+
                 if (leftAligned)
                     x = rect.x;
                 else
                     x = rect.x + rect.width - 24f;
 
                 Widgets.Checkbox(x, rect.y, ref checkOn);
-            
+
                 Gap(verticalSpacing);
             }
+
+            public int SliderInt(int val, int min, int max)
+            {
+                var num = (int) Widgets.HorizontalSlider(GetRect(22f), val, min, max, roundTo: 1f);
+                if (num != val)
+                    SoundDefOf.DragSlider.PlayOneShotOnCamera();
+                Gap(verticalSpacing);
+                return num;
+            }
         }
-        
+
         public class Elements
         {
             // Credits to Dubwise for this awesome function
@@ -148,6 +159,16 @@ namespace DSGUI
                 return Widgets.ButtonInvisible(inRect.ContractedBy(2f));
             }
 
+            public static bool ButtonInvisibleLabeledFree(Color textColor, GameFont textSize, Rect inRect, string label, GUIStyle style)
+            {
+                GUI.color = textColor;
+                Text.Font = textSize;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                LabelFree(inRect, label, style);
+                Text.Anchor = TextAnchor.UpperLeft;
+                return Widgets.ButtonInvisible(inRect.ContractedBy(2f));
+            }
+
             public static void SolidColorBG(Rect inRect, Color inColor)
             {
                 GUI.DrawTexture(inRect, SolidColorMaterials.NewSolidColorTexture(inColor));
@@ -188,6 +209,21 @@ namespace DSGUI
                 Widgets.DrawTextureFitted(butRect, tex, scale);
                 GUI.color = baseColor;
                 return Widgets.ButtonInvisible(butRect);
+            }
+            
+            public static void LabelFree(Rect rect, string label, GUIStyle style)
+            {
+                var position = rect;
+                var f = Prefs.UIScale / 2f;
+                if ((double) Prefs.UIScale > 1.0 && (double) Math.Abs(f - Mathf.Floor(f)) > 1.40129846432482E-45)
+                {
+                    position.xMin = Widgets.AdjustCoordToUIScalingFloor(rect.xMin);
+                    position.yMin = Widgets.AdjustCoordToUIScalingFloor(rect.yMin);
+                    position.xMax = Widgets.AdjustCoordToUIScalingCeil(rect.xMax + 1E-05f);
+                    position.yMax = Widgets.AdjustCoordToUIScalingCeil(rect.yMax + 1E-05f);
+                }
+                
+                GUI.Label(position, label, style);
             }
 
             public static void TryMakeFloatMenu(Pawn pawn, List<FloatMenuOption> options, string title)
