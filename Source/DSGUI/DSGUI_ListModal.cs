@@ -48,6 +48,12 @@ namespace DSGUI
         
         protected override void SetInitialSizeAndPosition()
         {
+            if (!DSGUIMod.settings.DSGUI_SavePosSize)
+            {
+                base.SetInitialSizeAndPosition();
+                return;
+            }
+            
             var windowSize = GlobalStorage.savedSize.Equals(new Vector2(0, 0)) ? InitialSize : GlobalStorage.savedSize;
             var windowPos = new Vector2((float) ((UI.screenWidth - windowSize.x) / 2.0), (float) ((UI.screenHeight - windowSize.y) / 2.0));
             
@@ -55,7 +61,6 @@ namespace DSGUI
                 windowPos = GlobalStorage.savedPos;
 
             windowRect = new Rect(windowPos.x, windowPos.y, windowSize.x, windowSize.y);
-            
             windowRect = windowRect.Rounded();
         }
 

@@ -109,9 +109,10 @@ namespace DSGUI
             if (Mouse.IsOver(actionRect))
                 Widgets.DrawHighlight(actionRect);
 
-            DSGUI.Elements.SeparatorVertical(graphicRect.xMax, height * y, height);
+            if (DSGUIMod.settings.DSGUI_DrawDividersColumns)
+                DSGUI.Elements.SeparatorVertical(graphicRect.xMax, height * y, height);
 
-            if (y != 0 && DSGUIMod.settings.DSGUI_DrawDividers)
+            if (y != 0 && DSGUIMod.settings.DSGUI_DrawDividersRows)
                 DSGUI.Elements.SeparatorHorizontal(0f, height * y, listRect.width);
         }
     }
