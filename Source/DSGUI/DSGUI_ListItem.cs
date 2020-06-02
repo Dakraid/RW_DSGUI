@@ -22,9 +22,9 @@ namespace DSGUI
         private readonly Texture2D thingIcon;
         private readonly Color thingColor = Color.white;
         private readonly Thing origTarget;
-        private readonly Thing target;
         private readonly Pawn pawn;
         private readonly GUIStyle style;
+        private readonly Thing target;
 
         public DSGUI_ListItem(
             Pawn p,
@@ -50,7 +50,9 @@ namespace DSGUI
                 thingIcon = Texture2D.blackTexture;
             }
 
+            GlobalStorage.currThing = target;
             AHlO.Invoke(null, new object[] {clickPos, pawn, orders});
+            GlobalStorage.currThing = null;
 
             style = new GUIStyle(Text.CurFontStyle)
             {

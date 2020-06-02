@@ -6,14 +6,13 @@ namespace DSGUI
 {
     public class DSGUISettings : ModSettings
     {
-        public float DSGUI_BoxHeight = 32f;
         public float DSGUI_IconScaling = 1f;
+        public int DSGUI_BoxHeight = 32;
         public int DSGUI_FontSize = 1;
         public bool DSGUI_DrawDividersRows = true;
         public bool DSGUI_DrawDividersColumns = true;
         public bool DSGUI_SavePosSize = true;
         public bool DSGUI_SortOrders = true;
-        public bool DSGUI_UseTranspiler = false;
 
         public override void ExposeData()
         {
@@ -25,7 +24,6 @@ namespace DSGUI
             Scribe_Values.Look(ref DSGUI_SavePosSize, "DSGUI_SavePosSizeLabel");
             Scribe_Values.Look(ref DSGUI_DrawDividersRows, "DSGUI_DrawDividersRowsLabel");
             Scribe_Values.Look(ref DSGUI_DrawDividersColumns, "DSGUI_DrawDividersColumnsLabel");
-            Scribe_Values.Look(ref DSGUI_UseTranspiler, "DSGUI_UseTranspilerLabel");
         }
     }
 
@@ -47,7 +45,7 @@ namespace DSGUI
 
         private static void ResetSettings()
         {
-            settings.DSGUI_BoxHeight = 32f;
+            settings.DSGUI_BoxHeight = 32;
             settings.DSGUI_IconScaling = 1f;
             settings.DSGUI_FontSize = 14;
             settings.DSGUI_SortOrders = true;
@@ -88,17 +86,10 @@ namespace DSGUI
             settings.DSGUI_FontSize = ls.SliderInt(settings.DSGUI_FontSize, 8, 32);
 
             ls.LabelDouble("DSGUI_BoxHeight".Translate(), settings.DSGUI_BoxHeight.ToString(CultureInfo.CurrentCulture));
-            settings.DSGUI_BoxHeight = ls.Slider(settings.DSGUI_BoxHeight, 4f, 64f);
+            settings.DSGUI_BoxHeight = ls.SliderInt(settings.DSGUI_BoxHeight, 4, 64);
 
             ls.GapLine();
-            
-            ls.Label("DSGUI_AdvWarn".Translate());
 
-            ls.Label("DSGUI_UseTranspiler".Translate());
-            ls.CheckboxNonLabeled(ref settings.DSGUI_UseTranspiler);
-
-            ls.GapLine();
-            
             if (ls.ButtonText("DSGUI_ResetBtn".Translate())) ResetSettings();
 
             ls.GapLine();
