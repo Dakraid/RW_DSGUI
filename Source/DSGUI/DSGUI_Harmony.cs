@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace DSGUI
@@ -26,6 +27,29 @@ namespace DSGUI
             private static bool Prefix(Pawn pawn)
             {
                 return DSGUI.Create(UI.MouseMapPosition(), pawn);
+            }
+        }
+
+        [HarmonyPatch(typeof(GenUI), "TargetsAt")]
+        private static class Patch_TargetsAt
+        {
+            public static bool Prepare(Harmony instance)
+            {
+                return !DSGUIMod.settings.DSGUI_UseTranspiler;
+            }
+
+            [HarmonyPriority(Priority.First)]
+            public static void Postfix(ref IEnumerable<LocalTargetInfo> __result, Vector3 clickPos, TargetingParameters clickParams, bool thingsOnly)
+            {
+                if (GlobalStorage.currThing == null || !thingsOnly || !clickParams.canTargetItems)
+                    return;
+
+                var localTargetInfos = __result.ToList();
+
+                localTargetInfos.RemoveAll(target => target.Thing != null);
+                localTargetInfos.Add(new LocalTargetInfo(GlobalStorage.currThing));
+
+                __result = localTargetInfos;
             }
         }
 

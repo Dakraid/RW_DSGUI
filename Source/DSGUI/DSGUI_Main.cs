@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using LWM.DeepStorage;
 using RimWorld;
 using UnityEngine;
@@ -42,22 +43,25 @@ namespace DSGUI
                     return false;
             }
 
-            // var buildingList = StaticHelper.GetBuildings(c, pawn.Map);
-            var building = c.GetFirstBuilding(pawn.Map);
+            var buildingList = StaticHelper.GetBuildings(c, pawn.Map);
+            // var building = c.GetFirstBuilding(pawn.Map);
 
-            var target = building?.AllComps.Find(x => x is IHoldMultipleThings.IHoldMultipleThings);
+            var target = buildingList.First(building => building.AllComps.Find(x => x is IHoldMultipleThings.IHoldMultipleThings) != null);
 
             if (target == null)
                 return true;
 
             var thingList = new List<Thing>(c.GetThingList(pawn.Map));
 
-            if (thingList.Count == 0)
-            {
-                var cells = building.GetSlotGroup().CellsList;
-
-                foreach (var cell in cells) thingList.AddRange(cell.GetThingList(pawn.Map));
-            }
+            if (thingList.EnumerableNullOrEmpty())
+                return true;
+            
+            // if (thingList.Count == 0)
+            // {
+            //     var cells = building.GetSlotGroup().CellsList;
+            //
+            //     foreach (var cell in cells) thingList.AddRange(cell.GetThingList(pawn.Map));
+            // }
 
             Find.WindowStack.Add(new DSGUI_ListModal(pawn, thingList, clickPosition));
             return false;
