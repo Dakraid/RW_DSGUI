@@ -50,9 +50,7 @@ namespace DSGUI
                 thingIcon = Texture2D.blackTexture;
             }
 
-            GlobalStorage.currThing = target;
             AHlO.Invoke(null, new object[] {clickPos, pawn, orders});
-            GlobalStorage.currThing = null;
 
             style = new GUIStyle(Text.CurFontStyle)
             {

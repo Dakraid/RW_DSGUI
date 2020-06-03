@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using AwesomeInventory.Common.HarmonyPatches;
+using HarmonyLib;
 using LWM.DeepStorage;
 using RimWorld;
 using UnityEngine;
@@ -18,6 +21,8 @@ namespace DSGUI
     [StaticConstructorOnStartup]
     public static class DSGUIMain
     {
+        public static bool AwesomeInventoryLoaded => ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "Awesome Inventory" || m.PackageId == "notooshabby.awesomeinventory");
+
         static DSGUIMain()
         {
             Settings.useDeepStorageRightClickLogic = false;

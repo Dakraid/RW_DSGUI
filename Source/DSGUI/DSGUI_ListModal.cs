@@ -102,7 +102,9 @@ namespace DSGUI
                 if (rows[i] == null)
                     try
                     {
+                        GlobalStorage.currThing = thingList[i];
                         rows[i] = new DSGUI_ListItem(pawn, thingList[i], cpos, boxHeight);
+                        GlobalStorage.currThing = null;
                     }
                     catch (Exception ex)
                     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using AwesomeInventory.Common.HarmonyPatches;
 using HarmonyLib;
 using PickUpAndHaul;
 using RimWorld;
@@ -79,7 +80,25 @@ namespace DSGUI
             private static readonly MethodInfo thingAt = AccessTools.Method(typeof(ThingGrid), "ThingAt", new[] {typeof(IntVec3)}).MakeGenericMethod(typeof(Apparel));
             private static readonly MethodInfo dsguiThingAt = AccessTools.Method(typeof(HarmonyHelper), "ThingAt", new[] {typeof(ThingGrid), typeof(IntVec3)}).MakeGenericMethod(typeof(Apparel));
             
-            [HarmonyDebug]
+            [HarmonyTranspiler]
+            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return instructions.MethodReplacer(thingAt, dsguiThingAt);
+            }
+        }
+
+        [HarmonyPatch(typeof(AddHumanlikeOrders_AwesomeInventory_Patch), nameof(AddHumanlikeOrders_AwesomeInventory_Patch.Postfix))]
+        private static class Patch_AwesomeAddHumanlikeOrders
+        {
+            private static readonly MethodInfo thingAt = AccessTools.Method(typeof(ThingGrid), "ThingAt", new[] {typeof(IntVec3)}).MakeGenericMethod(typeof(Apparel));
+            private static readonly MethodInfo dsguiThingAt = AccessTools.Method(typeof(HarmonyHelper), "ThingAt", new[] {typeof(ThingGrid), typeof(IntVec3)}).MakeGenericMethod(typeof(Apparel));
+
+            [HarmonyPrepare]
+            public static bool Prepare()
+            {
+                return DSGUIMain.AwesomeInventoryLoaded;
+            }
+            
             [HarmonyTranspiler]
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
