@@ -12,8 +12,6 @@ namespace DSGUI
 {
     public static class GlobalStorage
     {
-        public static Thing currThing = null;
-
         public static Vector2 savedSize = new Vector2(0, 0);
         public static Vector2 savedPos = new Vector2(0, 0);
     }
@@ -21,8 +19,6 @@ namespace DSGUI
     [StaticConstructorOnStartup]
     public static class DSGUIMain
     {
-        public static bool AwesomeInventoryLoaded => ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "Awesome Inventory" || m.PackageId == "notooshabby.awesomeinventory");
-
         static DSGUIMain()
         {
             Settings.useDeepStorageRightClickLogic = false;

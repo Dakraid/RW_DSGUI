@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -22,6 +24,8 @@ namespace DSGUI
         private readonly Vector3 cpos;
         private readonly DSGUI_ListItem[] rows;
         private Rect GizmoListRect;
+
+        private static readonly FieldInfo thingListTG = AccessTools.Field(typeof(ThingGrid), "thingGrid");
 
         public DSGUI_ListModal(Pawn p, List<Thing> lt, Vector3 pos)
         {
@@ -102,9 +106,13 @@ namespace DSGUI
                 if (rows[i] == null)
                     try
                     {
-                        GlobalStorage.currThing = thingList[i];
+                        var index = pawn.Map.cellIndices.CellToIndex(cpos.ToIntVec3());
+                        var listArray = (List<Thing>[]) thingListTG.GetValue(pawn.Map.thingGrid);
+                        var origList = listArray[index];
+
+                        listArray[index] = new List<Thing> {thingList[i]};
                         rows[i] = new DSGUI_ListItem(pawn, thingList[i], cpos, boxHeight);
-                        GlobalStorage.currThing = null;
+                        listArray[index] = origList;
                     }
                     catch (Exception ex)
                     {
