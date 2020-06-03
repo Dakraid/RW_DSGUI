@@ -24,7 +24,7 @@ namespace DSGUI
         private readonly Thing origTarget;
         private readonly Pawn pawn;
         private readonly GUIStyle style;
-        private readonly Thing target;
+        public readonly Thing target;
 
         public DSGUI_ListItem(
             Pawn p,

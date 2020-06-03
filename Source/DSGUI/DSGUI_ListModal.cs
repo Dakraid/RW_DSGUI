@@ -94,10 +94,8 @@ namespace DSGUI
             Widgets.BeginScrollView(scrollRect, ref scrollPosition, listRect);
             GUI.BeginGroup(listRect);
 
-            var j = 0;
             for (var i = 0; i < thingList.Count; i++)
             {
-                ++j;
                 var viewElement = new Rect(0.0f, boxHeight * i, inRect.width, boxHeight);
                 if (!viewElement.Overlaps(GizmoListRect)) continue;
 

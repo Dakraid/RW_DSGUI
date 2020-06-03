@@ -30,38 +30,24 @@ namespace DSGUI
         {
             var c = IntVec3.FromVector3(clickPosition);
 
-            if (!pawn.IsColonistPlayerControlled)
-                return false;
+            if (!pawn.IsColonistPlayerControlled || pawn.Downed || pawn.Map != Find.CurrentMap)
+                return true;
 
-            if (pawn.Downed)
-            {
-                Messages.Message("IsIncapped".Translate((NamedArgument) pawn.LabelCap, (NamedArgument) pawn), pawn, MessageTypeDefOf.RejectInput, false);
-            }
-            else
-            {
-                if (pawn.Map != Find.CurrentMap)
-                    return false;
-            }
-
-            var buildingList = StaticHelper.GetBuildings(c, pawn.Map);
+            var buildingList = StaticHelper.GetBuildings(c, pawn.Map).ToList();
             // var building = c.GetFirstBuilding(pawn.Map);
+            
+            if (buildingList.EnumerableNullOrEmpty())
+                return true;
 
-            var target = buildingList.First(building => building.AllComps.Find(x => x is IHoldMultipleThings.IHoldMultipleThings) != null);
+            var target = buildingList.Any(building => building.AllComps.Find(x => x is IHoldMultipleThings.IHoldMultipleThings) != null);
 
-            if (target == null)
+            if (!target)
                 return true;
 
             var thingList = new List<Thing>(c.GetThingList(pawn.Map));
 
             if (thingList.EnumerableNullOrEmpty())
                 return true;
-            
-            // if (thingList.Count == 0)
-            // {
-            //     var cells = building.GetSlotGroup().CellsList;
-            //
-            //     foreach (var cell in cells) thingList.AddRange(cell.GetThingList(pawn.Map));
-            // }
 
             Find.WindowStack.Add(new DSGUI_ListModal(pawn, thingList, clickPosition));
             return false;

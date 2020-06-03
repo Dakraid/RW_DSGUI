@@ -12,7 +12,7 @@ namespace DSGUI
     {
         public static class StaticHelper
         {
-            public static List<Building> GetBuildings(IntVec3 c, Map map)
+            public static IEnumerable<Building> GetBuildings(IntVec3 c, Map map)
             {
                 var returnList = new List<Building>();
                 var thingList = map.thingGrid.ThingsListAt(c);
