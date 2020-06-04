@@ -252,7 +252,7 @@ namespace DSGUI
                 }
                 else
                 {
-                    if (DSGUIMod.settings.DSGUI_SortOrders && options.Count > 1)
+                    if (DSGUIMod.settings.DSGUI_List_SortOrders && options.Count > 1)
                         options = options.OrderBy(x => x.Label).ToList();
 
                     var floatMenuMap = new FloatMenu(options, title) {givesColonistOrders = true};

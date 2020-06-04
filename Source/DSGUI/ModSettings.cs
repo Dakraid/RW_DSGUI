@@ -6,26 +6,33 @@ namespace DSGUI
 {
     public class DSGUISettings : ModSettings
     {
-        public int DSGUI_BoxHeight = 32;
-        public bool DSGUI_DrawDividersColumns = true;
-        public bool DSGUI_DrawDividersRows = true;
-        public int DSGUI_FontSize = 1;
-        public float DSGUI_IconScaling = 1f;
-        public bool DSGUI_SavePosSize = true;
-        public bool DSGUI_SortOrders = true;
-        public bool DSGUI_UseTab = true;
+        public int DSGUI_List_BoxHeight = 32;
+        public bool DSGUI_List_DrawDividersColumns = true;
+        public bool DSGUI_List_DrawDividersRows = true;
+        public int DSGUI_List_FontSize = 1;
+        public float DSGUI_List_IconScaling = 1f;
+        public bool DSGUI_List_SavePosSize = true;
+        public bool DSGUI_List_SortOrders = true;
+        public int DSGUI_Tab_BoxHeight = 32;
+        public bool DSGUI_Tab_DrawDividersColumns = true;
+        public bool DSGUI_Tab_DrawDividersRows = true;
+
+        public bool DSGUI_Tab_EnableTab = true;
+        public int DSGUI_Tab_FontSize = 1;
+        public float DSGUI_Tab_IconScaling = 1f;
+        public bool DSGUI_Tab_SortContent = true;
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref DSGUI_IconScaling, "DSGUI_IconScalingLabel");
-            Scribe_Values.Look(ref DSGUI_BoxHeight, "DSGUI_BoxHeightLabel");
-            Scribe_Values.Look(ref DSGUI_FontSize, "DSGUI_FontScalingLabel");
-            Scribe_Values.Look(ref DSGUI_SortOrders, "DSGUI_SortOrdersLabel");
-            Scribe_Values.Look(ref DSGUI_SavePosSize, "DSGUI_SavePosSizeLabel");
-            Scribe_Values.Look(ref DSGUI_DrawDividersRows, "DSGUI_DrawDividersRowsLabel");
-            Scribe_Values.Look(ref DSGUI_DrawDividersColumns, "DSGUI_DrawDividersColumnsLabel");
-            Scribe_Values.Look(ref DSGUI_UseTab, "DSGUI_DrawDividersColumnsLabel");
+            Scribe_Values.Look(ref DSGUI_List_IconScaling, "DSGUI_IconScalingLabel");
+            Scribe_Values.Look(ref DSGUI_List_BoxHeight, "DSGUI_BoxHeightLabel");
+            Scribe_Values.Look(ref DSGUI_List_FontSize, "DSGUI_FontScalingLabel");
+            Scribe_Values.Look(ref DSGUI_List_SortOrders, "DSGUI_SortOrdersLabel");
+            Scribe_Values.Look(ref DSGUI_List_SavePosSize, "DSGUI_SavePosSizeLabel");
+            Scribe_Values.Look(ref DSGUI_List_DrawDividersRows, "DSGUI_DrawDividersRowsLabel");
+            Scribe_Values.Look(ref DSGUI_List_DrawDividersColumns, "DSGUI_DrawDividersColumnsLabel");
+            Scribe_Values.Look(ref DSGUI_Tab_EnableTab, "DSGUI_DrawDividersColumnsLabel");
         }
     }
 
@@ -47,14 +54,21 @@ namespace DSGUI
 
         private static void ResetSettings()
         {
-            settings.DSGUI_BoxHeight = 32;
-            settings.DSGUI_IconScaling = 1f;
-            settings.DSGUI_FontSize = 14;
-            settings.DSGUI_SortOrders = true;
-            settings.DSGUI_SavePosSize = true;
-            settings.DSGUI_DrawDividersRows = true;
-            settings.DSGUI_DrawDividersColumns = true;
-            settings.DSGUI_UseTab = true;
+            settings.DSGUI_List_BoxHeight = 32;
+            settings.DSGUI_List_IconScaling = 1f;
+            settings.DSGUI_List_FontSize = 14;
+            settings.DSGUI_List_SortOrders = true;
+            settings.DSGUI_List_SavePosSize = true;
+            settings.DSGUI_List_DrawDividersRows = true;
+            settings.DSGUI_List_DrawDividersColumns = true;
+
+            settings.DSGUI_Tab_EnableTab = true;
+            settings.DSGUI_Tab_BoxHeight = 32;
+            settings.DSGUI_Tab_IconScaling = 1f;
+            settings.DSGUI_Tab_FontSize = 14;
+            settings.DSGUI_Tab_SortContent = true;
+            settings.DSGUI_Tab_DrawDividersRows = true;
+            settings.DSGUI_Tab_DrawDividersColumns = true;
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
@@ -69,30 +83,60 @@ namespace DSGUI
             ls.Label("DSGUI_Warn".Translate());
 
             ls.GapLine();
+            Text.Anchor = TextAnchor.MiddleCenter;
+            ls.Label("DSGUI_List_Label".Translate());
+            Text.Anchor = TextAnchor.UpperLeft;
+            ls.GapLine();
 
-            ls.Label("DSGUI_UseTab".Translate());
-            ls.CheckboxNonLabeled(ref settings.DSGUI_UseTab);
+            ls.Label("DSGUI_List_SortOrders".Translate());
+            ls.CheckboxNonLabeled(ref settings.DSGUI_List_SortOrders);
 
-            ls.Label("DSGUI_SortOrders".Translate());
-            ls.CheckboxNonLabeled(ref settings.DSGUI_SortOrders);
+            ls.Label("DSGUI_List_SavePosSize".Translate());
+            ls.CheckboxNonLabeled(ref settings.DSGUI_List_SavePosSize);
 
-            ls.Label("DSGUI_SavePosSize".Translate());
-            ls.CheckboxNonLabeled(ref settings.DSGUI_SavePosSize);
+            ls.Label("DSGUI_List_DrawDividersRows".Translate());
+            ls.CheckboxNonLabeled(ref settings.DSGUI_List_DrawDividersRows);
 
-            ls.Label("DSGUI_DrawDividersRows".Translate());
-            ls.CheckboxNonLabeled(ref settings.DSGUI_DrawDividersRows);
+            ls.Label("DSGUI_List_DrawDividersColumns".Translate());
+            ls.CheckboxNonLabeled(ref settings.DSGUI_List_DrawDividersColumns);
 
-            ls.Label("DSGUI_DrawDividersColumns".Translate());
-            ls.CheckboxNonLabeled(ref settings.DSGUI_DrawDividersColumns);
+            ls.LabelDouble("DSGUI_List_IconScaling".Translate(), settings.DSGUI_List_IconScaling.ToString(CultureInfo.CurrentCulture));
+            settings.DSGUI_List_IconScaling = ls.Slider(settings.DSGUI_List_IconScaling, 0f, 2f);
 
-            ls.LabelDouble("DSGUI_IconScaling".Translate(), settings.DSGUI_IconScaling.ToString(CultureInfo.CurrentCulture));
-            settings.DSGUI_IconScaling = ls.Slider(settings.DSGUI_IconScaling, 0f, 2f);
+            ls.LabelDouble("DSGUI_List_FontSize".Translate(), settings.DSGUI_List_FontSize.ToString(CultureInfo.CurrentCulture));
+            settings.DSGUI_List_FontSize = ls.SliderInt(settings.DSGUI_List_FontSize, 8, 32);
 
-            ls.LabelDouble("DSGUI_FontSize".Translate(), settings.DSGUI_FontSize.ToString(CultureInfo.CurrentCulture));
-            settings.DSGUI_FontSize = ls.SliderInt(settings.DSGUI_FontSize, 8, 32);
+            ls.LabelDouble("DSGUI_List_BoxHeight".Translate(), settings.DSGUI_List_BoxHeight.ToString(CultureInfo.CurrentCulture));
+            settings.DSGUI_List_BoxHeight = ls.SliderInt(settings.DSGUI_List_BoxHeight, 4, 64);
 
-            ls.LabelDouble("DSGUI_BoxHeight".Translate(), settings.DSGUI_BoxHeight.ToString(CultureInfo.CurrentCulture));
-            settings.DSGUI_BoxHeight = ls.SliderInt(settings.DSGUI_BoxHeight, 4, 64);
+            ls.GapLine();
+
+            ls.GapLine();
+            Text.Anchor = TextAnchor.MiddleCenter;
+            ls.Label("DSGUI_Tab_Label".Translate());
+            Text.Anchor = TextAnchor.UpperLeft;
+            ls.GapLine();
+
+            ls.Label("DSGUI_Tab_EnableTab".Translate());
+            ls.CheckboxNonLabeled(ref settings.DSGUI_Tab_EnableTab);
+
+            ls.Label("DSGUI_Tab_SortContent".Translate());
+            ls.CheckboxNonLabeled(ref settings.DSGUI_Tab_SortContent);
+
+            ls.Label("DSGUI_Tab_DrawDividersRows".Translate());
+            ls.CheckboxNonLabeled(ref settings.DSGUI_Tab_DrawDividersRows);
+
+            ls.Label("DSGUI_Tab_DrawDividersColumns".Translate());
+            ls.CheckboxNonLabeled(ref settings.DSGUI_Tab_DrawDividersColumns);
+
+            ls.LabelDouble("DSGUI_Tab_IconScaling".Translate(), settings.DSGUI_Tab_IconScaling.ToString(CultureInfo.CurrentCulture));
+            settings.DSGUI_Tab_IconScaling = ls.Slider(settings.DSGUI_Tab_IconScaling, 0f, 2f);
+
+            ls.LabelDouble("DSGUI_Tab_FontSize".Translate(), settings.DSGUI_Tab_FontSize.ToString(CultureInfo.CurrentCulture));
+            settings.DSGUI_Tab_FontSize = ls.SliderInt(settings.DSGUI_Tab_FontSize, 8, 32);
+
+            ls.LabelDouble("DSGUI_Tab_BoxHeight".Translate(), settings.DSGUI_Tab_BoxHeight.ToString(CultureInfo.CurrentCulture));
+            settings.DSGUI_Tab_BoxHeight = ls.SliderInt(settings.DSGUI_Tab_BoxHeight, 4, 64);
 
             ls.GapLine();
 

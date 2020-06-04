@@ -45,14 +45,14 @@ namespace DSGUI
 
             rows = new DSGUI_ListItem[thingList.Count];
 
-            boxHeight = DSGUIMod.settings.DSGUI_BoxHeight;
+            boxHeight = DSGUIMod.settings.DSGUI_List_BoxHeight;
         }
 
         public override Vector2 InitialSize => new Vector2(modalSize.x * (Screen.width / defaultScreenSize.x), modalSize.y * (Screen.height / defaultScreenSize.y));
 
         protected override void SetInitialSizeAndPosition()
         {
-            if (!DSGUIMod.settings.DSGUI_SavePosSize)
+            if (!DSGUIMod.settings.DSGUI_List_SavePosSize)
             {
                 base.SetInitialSizeAndPosition();
                 return;

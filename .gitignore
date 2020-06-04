@@ -1,4 +1,3 @@
-
 # Created by https://www.gitignore.io/api/rider,csharp,windows
 # Edit at https://www.gitignore.io/?templates=rider,csharp,windows
 
@@ -454,3 +453,8 @@ $RECYCLE.BIN/
 *.code-workscape
 .idea
 .vs
+
+HugsLib.dll
+0Harmony.dll
+**/HugsLib.dll
+**/0Harmony.dll

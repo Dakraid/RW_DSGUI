@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using LWM.DeepStorage;
@@ -12,18 +13,22 @@ namespace DSGUI
     [StaticConstructorOnStartup]
     public class DSGUI_TabModal : ITab
     {
-        private const float TopPadding = 20f;
-        private const float ThingIconSize = 28f;
-        private const float ThingRowHeight = 28f;
-        private const float ThingLeftX = 36f;
-        private const float StandardLineHeight = 22f;
+        private static Rect mainRect;
+        private static string searchString = "";
+
+        private static string headerTooltip;
+        private static CompDeepStorage deepStorageComp;
+        private static List<Thing> storedItems;
+        private static int curCount, maxCount;
+        private static string curWeight, maxWeight;
 
         private static readonly Texture2D Drop;
         public static readonly Color ThingLabelColor = new Color(0.9f, 0.9f, 0.9f, 1f);
         public static readonly Color HighlightColor = new Color(0.5f, 0.5f, 0.5f, 1f);
-        private Building_Storage buildingStorage;
         private Vector2 scrollPosition = Vector2.zero;
         private float scrollViewHeight = 1000f;
+        
+        private Building_Storage buildingStorage;
 
         static DSGUI_TabModal()
         {
@@ -32,43 +37,72 @@ namespace DSGUI
 
         public DSGUI_TabModal()
         {
-            size = new Vector2(460f, 450f);
+            size = new Vector2(520f, 460f);
             labelKey = "Contents";
+            
+            buildingStorage = SelThing as Building_Storage;
+            deepStorageComp = buildingStorage?.GetComp<CompDeepStorage>();
+
+            storedItems = deepStorageComp != null
+                ? deepStorageComp.getContentsHeader(out headerTooltip, out _)
+                : CompDeepStorage.genericContentsHeader(buildingStorage, out headerTooltip, out _);
+
+            var slotCells = (deepStorageComp?.parent as Building_Storage)?.AllSlotCells().ToList();
+            
+            if (slotCells == null)
+                return;
+            
+            var slots = slotCells.Count;
+            curCount = storedItems.Count;
+            curWeight = slotCells.Sum(allSlotCell =>
+                deepStorageComp.parent.Map.thingGrid.ThingsListAt(allSlotCell).Where(thing => thing.Spawned && thing.def.EverStorable(false))
+                    .Sum(thing => thing.GetStatValue(deepStorageComp.stat) * thing.stackCount)).ToString("0.##");
+            maxCount = deepStorageComp.maxNumberStacks;
+            maxWeight = (deepStorageComp.limitingTotalFactorForCell * slots).ToString("0.##");
         }
 
         protected override void FillTab()
         {
-            buildingStorage = SelThing as Building_Storage; // don't attach this to other things, 'k?
-            Text.Font = GameFont.Small;
-
-            var frame = new Rect(10f, 10f, size.x - 10, size.y - 10);
-            GUI.BeginGroup(frame);
-            Text.Font = GameFont.Small;
+            mainRect = new Rect(2f, 2f, size.x - 6f, size.y - 6f);
+            
+            GUI.BeginGroup(mainRect);
+            
             GUI.color = Color.white;
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
 
-            var curY = 0f;
-            Widgets.ListSeparator(ref curY, frame.width, labelKey.Translate()
-            );
-            curY += 5f;
+            // Make Header
+            var headRect = new Rect(mainRect) {height = 18f};
+            var headTitle = headRect.LeftPartPixels(62f);
+            var headSub = headRect.RightPartPixels(headRect.width - 69f);
+            headSub.y += 1f;
+            var headSubLeft = headSub.LeftHalf();
+            var headSubRight = headSub.RightHalf();
+            
+            Widgets.Label(headTitle, labelKey.Translate());
+            
+            DSGUI.Elements.SeparatorVertical(headTitle.width + 2f, headRect.y, headRect.height);
+            
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(headSubLeft, $"{curCount} / {maxCount} Slots");
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(headSubRight, $"{curWeight} / {maxWeight} Mass (kg)");
+            
+            TooltipHandler.TipRegion(headRect, headerTooltip);
+            
+            DSGUI.Elements.SeparatorHorizontal(headRect.x, headRect.height + 5f, headRect.width);
+            /*
 
-            string header, headerTooltip;
-            var cds = buildingStorage?.GetComp<CompDeepStorage>();
-
-            var storedItems = cds != null
-                ? cds.getContentsHeader(out header, out headerTooltip)
-                : CompDeepStorage.genericContentsHeader(buildingStorage, out header, out headerTooltip);
-            var tmpRect = new Rect(8f, curY, frame.width - 16, Text.CalcHeight(header, frame.width - 16));
-            Widgets.Label(tmpRect, header);
-
-            curY += tmpRect.height;
             storedItems = storedItems.OrderBy(x => x.def.defName).ThenByDescending(x =>
             {
                 x.TryGetQuality(out var c);
                 return (int) c;
             }).ThenByDescending(x => x.HitPoints / x.MaxHitPoints).ToList();
 
-            var outRect = new Rect(0f, 10f + curY, frame.width, frame.height - curY);
-            var viewRect = new Rect(0f, 0f, frame.width - 16f, scrollViewHeight);
+            /*
+            var outRect = new Rect(0f, 10f + curY, innerRect.width, innerRect.height - curY);
+            var viewRect = new Rect(0f, 0f, innerRect.width - 16f, scrollViewHeight);
 
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
 
@@ -85,6 +119,21 @@ namespace DSGUI
             if (Event.current.type == EventType.Layout) scrollViewHeight = curY + 25f;
 
             Widgets.EndScrollView();
+
+            // Search
+            var searchRect = new Rect(innerRect);
+            searchRect.x += 8f;
+            searchRect.height = 28f;
+            searchRect.width -= 40f + 16f; // 16f for padding of 8f on each side + 28f for the clear button
+
+            DSGUI.Elements.InputField("Search", searchRect, ref searchString);
+
+            searchRect.x = searchRect.width + 6f + 16f;
+            searchRect.width = 28f;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            if (Widgets.ButtonImageFitted(searchRect, Widgets.CheckboxOffTex))
+                searchString = "";
+            */
             GUI.EndGroup();
             GUI.color = Color.white;
             Text.Anchor = TextAnchor.UpperLeft;

@@ -5,3 +5,7 @@ Source
 .artifactignore
 azure-pipelines.yml
 README.md
+HugsLib.dll
+0Harmony.dll
+**/HugsLib.dll
+**/0Harmony.dll

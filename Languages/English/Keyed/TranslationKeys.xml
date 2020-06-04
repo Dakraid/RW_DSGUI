@@ -3,14 +3,15 @@
 <LanguageData>
   <DSGUI_Label>Netrve's DeepStorage GUI</DSGUI_Label>
   <DSGUI_Warn>Requires DeepStorage's right click to be disabled!</DSGUI_Warn>
-  <DSGUI_AdvWarn>This setting is for advanced users. Unless you know what you are doing or have been advised to use it, leave it.</DSGUI_AdvWarn>
-  <DSGUI_UseTranspiler>Use Transpiler instead of Prefix Method</DSGUI_UseTranspiler>
-  <DSGUI_SortOrders>Sort Orders</DSGUI_SortOrders>
-  <DSGUI_SavePosSize>Save last set window size and position</DSGUI_SavePosSize>
-  <DSGUI_DrawDividersRows>Draw Divider Between Rows</DSGUI_DrawDividersRows>
-  <DSGUI_DrawDividersColumns>Draw Divider Between Columns</DSGUI_DrawDividersColumns>
-  <DSGUI_IconScaling>Icon Scaling</DSGUI_IconScaling>
-  <DSGUI_BoxHeight>Scrollbox Item Height</DSGUI_BoxHeight>
-  <DSGUI_FontSize>Font Size</DSGUI_FontSize>
+  
+  <DSGUI_List_Label>Context Menu</DSGUI_List_Label>
+  <DSGUI_List_SortOrders>Sort Orders</DSGUI_List_SortOrders>
+  <DSGUI_List_SavePosSize>Save last set window size and position</DSGUI_List_SavePosSize>
+  <DSGUI_List_DrawDividersRows>Draw Divider Between Rows</DSGUI_List_DrawDividersRows>
+  <DSGUI_List_DrawDividersColumns>Draw Divider Between Columns</DSGUI_List_DrawDividersColumns>
+  <DSGUI_List_IconScaling>Icon Scaling</DSGUI_List_IconScaling>
+  <DSGUI_List_BoxHeight>Scrollbox Item Height</DSGUI_List_BoxHeight>
+  <DSGUI_List_FontSize>Font Size</DSGUI_List_FontSize>
+  
   <DSGUI_ResetBtn>Reset to Defaults</DSGUI_ResetBtn>
 </LanguageData>

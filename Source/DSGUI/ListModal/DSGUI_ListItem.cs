@@ -31,7 +31,7 @@ namespace DSGUI
             Vector3 clickPos,
             float boxHeight)
         {
-            iconScale = DSGUIMod.settings.DSGUI_IconScaling;
+            iconScale = DSGUIMod.settings.DSGUI_List_IconScaling;
             height = boxHeight;
             origTarget = t;
             target = t.GetInnerIfMinified();
@@ -53,7 +53,7 @@ namespace DSGUI
 
             style = new GUIStyle(Text.CurFontStyle)
             {
-                fontSize = DSGUIMod.settings.DSGUI_FontSize,
+                fontSize = DSGUIMod.settings.DSGUI_List_FontSize,
                 alignment = TextAnchor.MiddleCenter
             };
         }
@@ -103,10 +103,10 @@ namespace DSGUI
             if (Mouse.IsOver(actionRect))
                 Widgets.DrawHighlight(actionRect);
 
-            if (DSGUIMod.settings.DSGUI_DrawDividersColumns)
+            if (DSGUIMod.settings.DSGUI_List_DrawDividersColumns)
                 DSGUI.Elements.SeparatorVertical(graphicRect.xMax, height * y, height);
 
-            if (y != 0 && DSGUIMod.settings.DSGUI_DrawDividersRows)
+            if (y != 0 && DSGUIMod.settings.DSGUI_List_DrawDividersRows)
                 DSGUI.Elements.SeparatorHorizontal(0f, height * y, listRect.width);
         }
     }
