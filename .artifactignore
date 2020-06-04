@@ -1,0 +1,6 @@
+PrivateReferences
+Source
+.gitignore
+.artifactignore
+azure-pipelines.yml
+README.md
