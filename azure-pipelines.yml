@@ -26,8 +26,11 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
-- task: VSTest@2
+- task: ArchiveFiles@2
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    rootFolderOrFile: '$(Build.Repository.LocalPath)'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.Repository.Name)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+
