@@ -32,11 +32,11 @@ steps:
     rootFolderOrFile: '$(Build.Repository.LocalPath)'
     includeRootFolder: true
     archiveType: 'zip'
-    archiveFile: '$(Build.Repository.Name)_$(Build.BuildId).zip'
+    archiveFile: 'RW_DSGUI_$(Build.SourceVersion).zip'
     replaceExistingArchive: true
 
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: '$(Pipeline.Workspace)'
-    artifact: '$(Build.Repository.Name)_$(Build.BuildId).zip'
+    artifact: 'RW_DSGUI_$(Build.SourceVersion).zip'
     publishLocation: 'pipeline'
