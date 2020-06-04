@@ -57,10 +57,12 @@
     </ItemGroup>
     <ItemGroup>
       <Reference Include="IHoldMultipleThings, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>.\Packages\IHoldMultipleThings.dll</HintPath>
+        <HintPath>..\..\PrivateReferences\IHoldMultipleThings.dll</HintPath>
+        <Private>False</Private>
       </Reference>
       <Reference Include="LWM.DeepStorage, Version=1.0.0.41630, Culture=neutral, PublicKeyToken=null">
-        <HintPath>.\Packages\LWM.DeepStorage.dll</HintPath>
+        <HintPath>..\..\PrivateReferences\LWM.DeepStorage.dll</HintPath>
+          <Private>False</Private>
       </Reference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
