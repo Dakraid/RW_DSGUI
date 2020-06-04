@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using AwesomeInventory.Common.HarmonyPatches;
+﻿using System.Linq;
 using HarmonyLib;
-using PickUpAndHaul;
+using LWM.DeepStorage;
 using RimWorld;
-using UnityEngine;
 using Verse;
 
 namespace DSGUI

@@ -120,13 +120,14 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="DSGUI_Harmony.cs" />
         <Compile Include="DSGUI_Main.cs" />
-        <Compile Include="DSGUI_Elements.cs" />
-        <Compile Include="DSGUI_ListItem.cs" />
-        <Compile Include="DSGUI_ListModal.cs" />
+        <Compile Include="ListModal\DSGUI_ListItem.cs" />
+        <Compile Include="ListModal\DSGUI_ListModal.cs" />
         <Compile Include="ModSettings.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="TabModal\DSGUI_TabModal.cs" />
+        <Compile Include="Util\DSGUI_Elements.cs" />
+        <Compile Include="Util\DSGUI_Harmony.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

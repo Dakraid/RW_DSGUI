@@ -13,6 +13,7 @@ namespace DSGUI
         public bool DSGUI_DrawDividersColumns = true;
         public bool DSGUI_SavePosSize = true;
         public bool DSGUI_SortOrders = true;
+        public bool DSGUI_UseTab = true;
 
         public override void ExposeData()
         {
@@ -24,6 +25,7 @@ namespace DSGUI
             Scribe_Values.Look(ref DSGUI_SavePosSize, "DSGUI_SavePosSizeLabel");
             Scribe_Values.Look(ref DSGUI_DrawDividersRows, "DSGUI_DrawDividersRowsLabel");
             Scribe_Values.Look(ref DSGUI_DrawDividersColumns, "DSGUI_DrawDividersColumnsLabel");
+            Scribe_Values.Look(ref DSGUI_UseTab, "DSGUI_DrawDividersColumnsLabel");
         }
     }
 
@@ -52,6 +54,7 @@ namespace DSGUI
             settings.DSGUI_SavePosSize = true;
             settings.DSGUI_DrawDividersRows = true;
             settings.DSGUI_DrawDividersColumns = true;
+            settings.DSGUI_UseTab = true;
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
@@ -66,6 +69,9 @@ namespace DSGUI
             ls.Label("DSGUI_Warn".Translate());
             
             ls.GapLine();
+
+            ls.Label("DSGUI_UseTab".Translate());
+            ls.CheckboxNonLabeled(ref settings.DSGUI_UseTab);
 
             ls.Label("DSGUI_SortOrders".Translate());
             ls.CheckboxNonLabeled(ref settings.DSGUI_SortOrders);
