@@ -1,5 +1,6 @@
 PrivateReferences
 Source
+.git
 .gitignore
 .artifactignore
 azure-pipelines.yml
