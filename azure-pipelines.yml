@@ -27,16 +27,8 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.SourcesDirectory)'
-    includeRootFolder: true
-    archiveType: 'zip'
-    archiveFile: 'RW_DSGUI_$(Build.BuildId).zip'
-    replaceExistingArchive: true
-
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Pipeline.Workspace)'
+    targetPath: '$(Build.SourcesDirectory)'
     artifact: 'RW_DSGUI_$(Build.BuildId).zip'
     publishLocation: 'pipeline'
