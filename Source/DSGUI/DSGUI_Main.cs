@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using AwesomeInventory.Common.HarmonyPatches;
-using HarmonyLib;
 using LWM.DeepStorage;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -36,7 +32,7 @@ namespace DSGUI
 
             var buildingList = StaticHelper.GetBuildings(c, pawn.Map).ToList();
             // var building = c.GetFirstBuilding(pawn.Map);
-            
+
             if (buildingList.EnumerableNullOrEmpty())
                 return true;
 

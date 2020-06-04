@@ -6,11 +6,11 @@ namespace DSGUI
 {
     public class DSGUISettings : ModSettings
     {
-        public float DSGUI_IconScaling = 1f;
         public int DSGUI_BoxHeight = 32;
-        public int DSGUI_FontSize = 1;
-        public bool DSGUI_DrawDividersRows = true;
         public bool DSGUI_DrawDividersColumns = true;
+        public bool DSGUI_DrawDividersRows = true;
+        public int DSGUI_FontSize = 1;
+        public float DSGUI_IconScaling = 1f;
         public bool DSGUI_SavePosSize = true;
         public bool DSGUI_SortOrders = true;
         public bool DSGUI_UseTab = true;
@@ -32,8 +32,8 @@ namespace DSGUI
     internal class DSGUIMod : Mod
     {
         public static DSGUISettings settings;
-        private Vector2 scrollPosition;
         private float scrollHeight;
+        private Vector2 scrollPosition;
 
         public DSGUIMod(ModContentPack content) : base(content)
         {
@@ -61,13 +61,13 @@ namespace DSGUI
         {
             var ls = new DSGUI.Listing_Extended {verticalSpacing = 8f};
             var viewRect = new Rect(0, 0, inRect.width - 16f, scrollHeight);
-            
+
             ls.BeginScrollView(inRect, ref scrollPosition, ref viewRect);
             GUI.BeginGroup(viewRect);
             ls.GapLine();
-            
+
             ls.Label("DSGUI_Warn".Translate());
-            
+
             ls.GapLine();
 
             ls.Label("DSGUI_UseTab".Translate());
@@ -75,7 +75,7 @@ namespace DSGUI
 
             ls.Label("DSGUI_SortOrders".Translate());
             ls.CheckboxNonLabeled(ref settings.DSGUI_SortOrders);
-            
+
             ls.Label("DSGUI_SavePosSize".Translate());
             ls.CheckboxNonLabeled(ref settings.DSGUI_SavePosSize);
 
@@ -101,7 +101,7 @@ namespace DSGUI
             ls.GapLine();
 
             scrollHeight = ls.CurHeight;
-            
+
             GUI.EndGroup();
             ls.EndScrollView(ref viewRect);
 

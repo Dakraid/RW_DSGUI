@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using RimWorld;
@@ -16,15 +15,15 @@ namespace DSGUI
         private readonly float height;
         private readonly float iconScale;
         public readonly string label;
+        private readonly Texture2D menuIcon = ContentFinder<Texture2D>.Get("UI/Buttons/MainButtons/Menu");
 
         private readonly List<FloatMenuOption> orders = new List<FloatMenuOption>();
-        private readonly Texture2D menuIcon = ContentFinder<Texture2D>.Get("UI/Buttons/MainButtons/Menu");
-        private readonly Texture2D thingIcon;
-        private readonly Color thingColor = Color.white;
         private readonly Thing origTarget;
         private readonly Pawn pawn;
         private readonly GUIStyle style;
-        public readonly Thing target;
+        private readonly Thing target;
+        private readonly Color thingColor = Color.white;
+        private readonly Texture2D thingIcon;
 
         public DSGUI_ListItem(
             Pawn p,
@@ -54,8 +53,8 @@ namespace DSGUI
 
             style = new GUIStyle(Text.CurFontStyle)
             {
-                fontStyle = Text.CurFontStyle.fontStyle,
-                fontSize = DSGUIMod.settings.DSGUI_FontSize
+                fontSize = DSGUIMod.settings.DSGUI_FontSize,
+                alignment = TextAnchor.MiddleCenter
             };
         }
 

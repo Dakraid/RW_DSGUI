@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -21,11 +20,11 @@ namespace DSGUI
         private static Pawn pawn;
         private static List<Thing> thingList;
 
+        private static readonly FieldInfo thingListTG = AccessTools.Field(typeof(ThingGrid), "thingGrid");
+
         private readonly Vector3 cpos;
         private readonly DSGUI_ListItem[] rows;
         private Rect GizmoListRect;
-
-        private static readonly FieldInfo thingListTG = AccessTools.Field(typeof(ThingGrid), "thingGrid");
 
         public DSGUI_ListModal(Pawn p, List<Thing> lt, Vector3 pos)
         {
@@ -50,7 +49,7 @@ namespace DSGUI
         }
 
         public override Vector2 InitialSize => new Vector2(modalSize.x * (Screen.width / defaultScreenSize.x), modalSize.y * (Screen.height / defaultScreenSize.y));
-        
+
         protected override void SetInitialSizeAndPosition()
         {
             if (!DSGUIMod.settings.DSGUI_SavePosSize)
@@ -58,10 +57,10 @@ namespace DSGUI
                 base.SetInitialSizeAndPosition();
                 return;
             }
-            
+
             var windowSize = GlobalStorage.savedSize.Equals(new Vector2(0, 0)) ? InitialSize : GlobalStorage.savedSize;
             var windowPos = new Vector2((float) ((UI.screenWidth - windowSize.x) / 2.0), (float) ((UI.screenHeight - windowSize.y) / 2.0));
-            
+
             if (!GlobalStorage.savedPos.Equals(new Vector2(0, 0)))
                 windowPos = GlobalStorage.savedPos;
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using LWM.DeepStorage;
@@ -54,11 +53,13 @@ namespace DSGUI
 
             string header, headerTooltip;
             var cds = buildingStorage?.GetComp<CompDeepStorage>();
-            
-            var storedItems = cds != null ? cds.getContentsHeader(out header, out headerTooltip) : CompDeepStorage.genericContentsHeader(buildingStorage, out header, out headerTooltip);
+
+            var storedItems = cds != null
+                ? cds.getContentsHeader(out header, out headerTooltip)
+                : CompDeepStorage.genericContentsHeader(buildingStorage, out header, out headerTooltip);
             var tmpRect = new Rect(8f, curY, frame.width - 16, Text.CalcHeight(header, frame.width - 16));
             Widgets.Label(tmpRect, header);
-            
+
             curY += tmpRect.height;
             storedItems = storedItems.OrderBy(x => x.def.defName).ThenByDescending(x =>
             {
@@ -93,7 +94,7 @@ namespace DSGUI
         {
             width -= 24f;
             Widgets.InfoCardButton(width, y, thing);
-            
+
             width -= 24f;
             var forbidRect = new Rect(width, y, 24f, 24f);
             var allowFlag = !thing.IsForbidden(Faction.OfPlayer);
@@ -138,7 +139,7 @@ namespace DSGUI
                     TooltipHandler.TipRegion(rotRect, "DaysUntilRotTip".Translate());
                 }
             }
-            
+
             var itemRect = new Rect(0f, y, width, 28f);
             if (Mouse.IsOver(itemRect))
             {
@@ -160,7 +161,7 @@ namespace DSGUI
             }
 
             Text.WordWrap = true;
-            
+
             var text2 = thing.DescriptionDetailed;
             if (thing.def.useHitPoints)
             {

@@ -210,19 +210,19 @@ namespace DSGUI
                 GUI.color = baseColor;
                 return Widgets.ButtonInvisible(butRect);
             }
-            
+
             public static void LabelFree(Rect rect, string label, GUIStyle style)
             {
                 var position = rect;
                 var f = Prefs.UIScale / 2f;
-                if ((double) Prefs.UIScale > 1.0 && (double) Math.Abs(f - Mathf.Floor(f)) > 1.40129846432482E-45)
+                if (Prefs.UIScale > 1.0 && Math.Abs(f - Mathf.Floor(f)) > 1.40129846432482E-45)
                 {
                     position.xMin = Widgets.AdjustCoordToUIScalingFloor(rect.xMin);
                     position.yMin = Widgets.AdjustCoordToUIScalingFloor(rect.yMin);
                     position.xMax = Widgets.AdjustCoordToUIScalingCeil(rect.xMax + 1E-05f);
                     position.yMax = Widgets.AdjustCoordToUIScalingCeil(rect.yMax + 1E-05f);
                 }
-                
+
                 GUI.Label(position, label, style);
             }
 
@@ -254,7 +254,7 @@ namespace DSGUI
                 {
                     if (DSGUIMod.settings.DSGUI_SortOrders && options.Count > 1)
                         options = options.OrderBy(x => x.Label).ToList();
-                    
+
                     var floatMenuMap = new FloatMenu(options, title) {givesColonistOrders = true};
                     Find.WindowStack.Add(floatMenuMap);
                 }
