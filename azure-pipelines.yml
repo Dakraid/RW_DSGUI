@@ -26,11 +26,17 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.Repository.LocalPath)'
     includeRootFolder: true
     archiveType: 'zip'
-    archiveFile: '$(Build.Repository.Name)/$(Build.BuildId).zip'
+    archiveFile: '$(Build.Repository.Name)_$(Build.BuildId).zip'
     replaceExistingArchive: true
 
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)'
+    artifact: '$(Build.Repository.Name)_$(Build.BuildId).zip'
+    publishLocation: 'pipeline'
