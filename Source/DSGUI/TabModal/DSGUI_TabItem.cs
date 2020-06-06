@@ -60,12 +60,12 @@ namespace DSGUI
             // Define all the rectangles used by the GUI
             var listRect = new Rect(0.0f, height * y, inRect.width, height);
             var thingRect = listRect.LeftPart(0.8f);
-            thingRect.width -= 16;
             var itemRect = thingRect.LeftPartPixels(thingRect.width - 72f);
             var massRect = thingRect.RightPartPixels(72f);
             massRect.x += 6f;
             var actionRect = listRect.RightPart(0.2f);
-            actionRect.x -= 16;
+            actionRect.x += 6f;
+            actionRect.width -= 6f;
             var iconRect = itemRect.LeftPart(0.15f).ContractedBy(2f);
             var labelRect = itemRect.RightPart(0.85f);
 
@@ -114,21 +114,14 @@ namespace DSGUI
                 Widgets.DrawHighlight(itemRect);
 
             DSGUI.Elements.LabelAnchored(massRect, target.def.BaseMass.ToString("0.## kg"), TextAnchor.MiddleCenter);
-            
-            actionRect.width -= 24f;
-            Widgets.InfoCardButton(actionRect.x + actionRect.width, height * y, target);
-            
-            var forbidRect = new Rect(width, y, 24f, 24f);
-            var allowFlag = !target.IsForbidden(Faction.OfPlayer);
-            var tmpFlag = allowFlag;
-            TooltipHandler.TipRegion(forbidRect, allowFlag ? "CommandNotForbiddenDesc".Translate() : "CommandForbiddenDesc".Translate());
-            Widgets.Checkbox(forbidRect.x, forbidRect.y, ref allowFlag, 24f, false, true);
-            if (allowFlag != tmpFlag)
-                target.SetForbidden(!allowFlag, false);
+
+            var spacing = (actionRect.width - 24 * 3) / 4;
+            var xPos = actionRect.x + spacing;
+            var heightPos = height * y + (height - 24f) / 2;
 
             if (Settings.useEjectButton)
             {
-                var yetAnotherRect = new Rect(width, y, 24f, 24f);
+                var yetAnotherRect = new Rect(xPos, heightPos, 24f, 24f);
                 TooltipHandler.TipRegion(yetAnotherRect, "LWM.ContentsDropDesc".Translate());
                 if (Widgets.ButtonImage(yetAnotherRect, dropIcon, Color.gray, Color.white, false))
                 {
@@ -142,6 +135,18 @@ namespace DSGUI
                             new LookTargets(loc, map), MessageTypeDefOf.NegativeEvent);
                 }
             }
+
+            xPos += spacing + 24f;
+            var forbidRect = new Rect(xPos, heightPos, 24f, 24f);
+            var allowFlag = !target.IsForbidden(Faction.OfPlayer);
+            var tmpFlag = allowFlag;
+            TooltipHandler.TipRegion(forbidRect, allowFlag ? "CommandNotForbiddenDesc".Translate() : "CommandForbiddenDesc".Translate());
+            Widgets.Checkbox(forbidRect.x, forbidRect.y, ref allowFlag, 24f, false, true);
+            if (allowFlag != tmpFlag)
+                target.SetForbidden(!allowFlag, false);
+            
+            xPos += spacing + 24f;
+            Widgets.InfoCardButton(xPos, heightPos, target);
 
             if (DSGUIMod.settings.DSGUI_Tab_DrawDividersColumns) 
             {
