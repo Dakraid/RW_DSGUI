@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using RimWorld;
 using UnityEngine;
@@ -21,55 +22,6 @@ namespace DSGUI
                         returnList.Add(building);
 
                 return returnList;
-            }
-        }
-
-        // TODO: Possibly verify the options based on the functionality as implemented in FloatMenuMap
-        public class Helper
-        {
-            private static bool OptionsMatch(FloatMenuOption a, FloatMenuOption b)
-            {
-                return a.Label == b.Label;
-            }
-
-            public static bool StillValid(
-                FloatMenuOption opt,
-                IEnumerable<FloatMenuOption> curOpts,
-                Pawn forPawn)
-            {
-                var cachedChoices = (List<FloatMenuOption>) null;
-                var cachedChoicesForPos = new Vector3(-9999f, -9999f, -9999f);
-                return StillValid(opt, curOpts, forPawn, ref cachedChoices, ref cachedChoicesForPos);
-            }
-
-            private static bool StillValid(
-                FloatMenuOption opt,
-                IEnumerable<FloatMenuOption> curOpts,
-                Pawn forPawn,
-                ref List<FloatMenuOption> cachedChoices,
-                ref Vector3 cachedChoicesForPos)
-            {
-                if (opt.revalidateClickTarget == null) return curOpts.Any(t => OptionsMatch(opt, t));
-
-                {
-                    if (!opt.revalidateClickTarget.Spawned)
-                        return false;
-
-                    var vector3Shifted = opt.revalidateClickTarget.Position.ToVector3Shifted();
-                    List<FloatMenuOption> floatMenuOptionList;
-                    if (vector3Shifted == cachedChoicesForPos)
-                    {
-                        floatMenuOptionList = cachedChoices;
-                    }
-                    else
-                    {
-                        cachedChoices = FloatMenuMakerMap.ChoicesAtFor(vector3Shifted, forPawn);
-                        cachedChoicesForPos = vector3Shifted;
-                        floatMenuOptionList = cachedChoices;
-                    }
-
-                    return (from t in floatMenuOptionList where OptionsMatch(opt, t) select !t.Disabled).FirstOrDefault();
-                }
             }
         }
 
@@ -107,6 +59,7 @@ namespace DSGUI
             }
         }
 
+        [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
         public class Elements
         {
             // Credits to Dubwise for this awesome function
@@ -147,6 +100,20 @@ namespace DSGUI
                     GUI.FocusControl(name);
                 if (((!Input.GetMouseButtonDown(0) ? 0 : !Mouse.IsOver(rect) ? 1 : 0) & (flag ? 1 : 0)) != 0)
                     GUI.FocusControl(null);
+            }
+
+            public static void LabelAnchored(Rect rect, string label, TextAnchor textAnchor)
+            {
+                Text.Anchor = textAnchor;
+                Widgets.Label(rect, label);
+                Text.Anchor = TextAnchor.UpperLeft;
+            }
+
+            public static void DrawIconFitted(Rect iconRect, Texture thingIcon, Color thingColor, float iconScale)
+            {
+                GUI.color = thingColor;
+                Widgets.DrawTextureFitted(iconRect, thingIcon, iconScale);
+                GUI.color = Color.white;
             }
 
             public static bool ButtonInvisibleLabeled(Color textColor, GameFont textSize, Rect inRect, string label)

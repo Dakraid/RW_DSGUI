@@ -60,22 +60,21 @@ namespace DSGUI
 
         public void DoDraw(Rect inRect, float y, bool altBG = false)
         {
-            var listRect = new Rect(0.0f, height * y, inRect.width, height);
-
             //if (altBG)
             //    DSGUI.Elements.SolidColorBG(listRect, new Color(1f, 1f, 1f, 0.075f));
-
-            var graphicRect = listRect.LeftPart(0.9f);
-            graphicRect.width -= 16;
+            
+            var listRect = new Rect(0.0f, height * y, inRect.width, height);
+            var itemRect = listRect.LeftPart(0.9f);
+            itemRect.width -= 16;
             var actionRect = listRect.RightPart(0.1f);
             actionRect.x -= 16;
+            var iconRect = itemRect.LeftPart(0.15f).ContractedBy(2f);
+            var labelRect = itemRect.RightPart(0.85f);
 
-            GUI.color = thingColor;
-            Widgets.DrawTextureFitted(graphicRect.LeftPart(0.15f).ContractedBy(2f), thingIcon, iconScale);
-            TooltipHandler.TipRegion(graphicRect.RightPart(0.85f), (TipSignal) target.def.description);
-            GUI.color = Color.white;
+            DSGUI.Elements.DrawIconFitted(iconRect, thingIcon, thingColor, iconScale);
+            TooltipHandler.TipRegion(labelRect, (TipSignal) target.def.description);
 
-            if (DSGUI.Elements.ButtonInvisibleLabeledFree(Color.white, GameFont.Small, graphicRect.RightPart(0.85f), label.CapitalizeFirst(), style))
+            if (DSGUI.Elements.ButtonInvisibleLabeledFree(Color.white, GameFont.Small, itemRect.RightPart(0.85f), label.CapitalizeFirst(), style))
             {
                 if (pawn.Map != origTarget.Map)
                     return;
@@ -85,8 +84,8 @@ namespace DSGUI
                 Find.WindowStack.TryRemove(typeof(DSGUI_ListModal));
             }
 
-            if (Mouse.IsOver(graphicRect))
-                Widgets.DrawHighlight(graphicRect);
+            if (Mouse.IsOver(itemRect))
+                Widgets.DrawHighlight(itemRect);
 
             if (orders.Count > 0)
             {
@@ -94,9 +93,7 @@ namespace DSGUI
             }
             else
             {
-                GUI.color = Color.gray;
-                Widgets.DrawTextureFitted(actionRect, menuIcon, iconScale);
-                GUI.color = Color.white;
+                DSGUI.Elements.DrawIconFitted(actionRect, menuIcon, Color.gray, iconScale);
                 TooltipHandler.TipRegion(actionRect, "No orders available");
             }
 
@@ -104,7 +101,7 @@ namespace DSGUI
                 Widgets.DrawHighlight(actionRect);
 
             if (DSGUIMod.settings.DSGUI_List_DrawDividersColumns)
-                DSGUI.Elements.SeparatorVertical(graphicRect.xMax, height * y, height);
+                DSGUI.Elements.SeparatorVertical(itemRect.xMax, height * y, height);
 
             if (y != 0 && DSGUIMod.settings.DSGUI_List_DrawDividersRows)
                 DSGUI.Elements.SeparatorHorizontal(0f, height * y, listRect.width);

@@ -13,22 +13,23 @@ namespace DSGUI
     [StaticConstructorOnStartup]
     public class DSGUI_TabModal : ITab
     {
-        private static Rect mainRect;
-        private static string searchString = "";
-
-        private static string headerTooltip;
-        private static CompDeepStorage deepStorageComp;
-        private static List<Thing> storedItems;
-        private static int curCount, maxCount;
-        private static string curWeight, maxWeight;
-
         private static readonly Texture2D Drop;
-        public static readonly Color ThingLabelColor = new Color(0.9f, 0.9f, 0.9f, 1f);
-        public static readonly Color HighlightColor = new Color(0.5f, 0.5f, 0.5f, 1f);
-        private Vector2 scrollPosition = Vector2.zero;
-        private float scrollViewHeight = 1000f;
         
+        private static Rect mainRect;
+        private string searchString = "";
+
+        private Vector2 scrollPosition;
+        private float scrollHeight;
+        private static float boxHeight = 48f;
+        
+        private DSGUI_TabItem[] rows;
+        private List<Thing> storedItems;
         private Building_Storage buildingStorage;
+        private CompDeepStorage deepStorageComp;
+        private string curWeight, maxWeight;
+        private int curCount, maxCount, minCount;
+        
+        private static Building_Storage lastStorage;
 
         static DSGUI_TabModal()
         {
@@ -38,31 +39,62 @@ namespace DSGUI
         public DSGUI_TabModal()
         {
             size = new Vector2(520f, 460f);
-            labelKey = "Contents";
             
-            buildingStorage = SelThing as Building_Storage;
-            deepStorageComp = buildingStorage?.GetComp<CompDeepStorage>();
+            Text.Anchor = TextAnchor.MiddleCenter;
+            labelKey = "Contents";
+            Text.Anchor = TextAnchor.UpperLeft;
+            
+            boxHeight = DSGUIMod.settings.DSGUI_List_BoxHeight;
+        }
 
-            storedItems = deepStorageComp != null
-                ? deepStorageComp.getContentsHeader(out headerTooltip, out _)
-                : CompDeepStorage.genericContentsHeader(buildingStorage, out headerTooltip, out _);
+        private void getStorageProperties()
+        {
+            deepStorageComp = buildingStorage?.GetComp<CompDeepStorage>();
 
             var slotCells = (deepStorageComp?.parent as Building_Storage)?.AllSlotCells().ToList();
             
             if (slotCells == null)
                 return;
             
-            var slots = slotCells.Count;
+            float totalWeight = 0;
+            foreach (var allSlotCell in slotCells)
+            {
+                float sum = 0;
+                foreach (var thing in deepStorageComp.parent.Map.thingGrid.ThingsListAt(allSlotCell).Where(thing => thing.Spawned && thing.def.EverStorable(false)))
+                {
+                    storedItems.Add(thing);
+                    sum += thing.GetStatValue(deepStorageComp.stat) * thing.stackCount;
+                }
+
+                totalWeight += sum;
+            }
+
+            storedItems = storedItems.OrderBy(x => x.def.defName).ThenByDescending(x =>
+            {
+                x.TryGetQuality(out var c);
+                return (int) c;
+            }).ThenByDescending(x => x.HitPoints / x.MaxHitPoints).ToList();
+            
             curCount = storedItems.Count;
-            curWeight = slotCells.Sum(allSlotCell =>
-                deepStorageComp.parent.Map.thingGrid.ThingsListAt(allSlotCell).Where(thing => thing.Spawned && thing.def.EverStorable(false))
-                    .Sum(thing => thing.GetStatValue(deepStorageComp.stat) * thing.stackCount)).ToString("0.##");
-            maxCount = deepStorageComp.maxNumberStacks;
-            maxWeight = (deepStorageComp.limitingTotalFactorForCell * slots).ToString("0.##");
+            curWeight = totalWeight.ToString("0.##");
+            minCount = deepStorageComp.minNumberStacks * slotCells.Count;
+            maxCount = deepStorageComp.maxNumberStacks * slotCells.Count;
+            var tempMax = deepStorageComp.limitingTotalFactorForCell * slotCells.Count;
+            maxWeight = tempMax > 0 ? tempMax.ToString("0.##") : "inf.";
         }
 
         protected override void FillTab()
         {
+            buildingStorage = SelThing as Building_Storage;
+            if (buildingStorage != lastStorage)
+            {
+                storedItems = new List<Thing>();
+                getStorageProperties();
+                rows = new DSGUI_TabItem[storedItems.Count];
+
+                lastStorage = buildingStorage;
+            }
+            
             mainRect = new Rect(2f, 2f, size.x - 6f, size.y - 6f);
             
             GUI.BeginGroup(mainRect);
@@ -72,54 +104,63 @@ namespace DSGUI
             Text.Anchor = TextAnchor.MiddleLeft;
 
             // Make Header
-            var headRect = new Rect(mainRect) {height = 18f};
+            var headRect = new Rect(mainRect) {height = 36f};
             var headTitle = headRect.LeftPartPixels(62f);
-            var headSub = headRect.RightPartPixels(headRect.width - 69f);
-            headSub.y += 1f;
-            var headSubLeft = headSub.LeftHalf();
-            var headSubRight = headSub.RightHalf();
+            var headInfo = headRect.RightPartPixels(headRect.width - 69f);
+            headInfo.y += 1f;
+            headInfo.width -= 26f;
             
             Widgets.Label(headTitle, labelKey.Translate());
             
             DSGUI.Elements.SeparatorVertical(headTitle.width + 2f, headRect.y, headRect.height);
-            
+
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(headSubLeft, $"{curCount} / {maxCount} Slots");
-            Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(headSubRight, $"{curWeight} / {maxWeight} Mass (kg)");
             
-            TooltipHandler.TipRegion(headRect, headerTooltip);
+            Widgets.Label(headInfo, $"{curCount} / {maxCount} Stacks (min. {minCount})\n{curWeight} / {maxWeight} kg");
+            
             
             DSGUI.Elements.SeparatorHorizontal(headRect.x, headRect.height + 5f, headRect.width);
-            /*
+            
+            var headSub = new Rect(mainRect) {height = 18f};
+            headSub.y += headRect.height + 8f;
+            
+            // Scrollable List
+            var scrollRect = new Rect(mainRect);
+            scrollRect.y += headRect.height + 10f;
+            scrollRect.height -= (headRect.height + 10f);
 
-            storedItems = storedItems.OrderBy(x => x.def.defName).ThenByDescending(x =>
-            {
-                x.TryGetQuality(out var c);
-                return (int) c;
-            }).ThenByDescending(x => x.HitPoints / x.MaxHitPoints).ToList();
+            scrollHeight = storedItems.Count * DSGUIMod.settings.DSGUI_Tab_BoxHeight;
+            var viewRect = new Rect(0.0f, 0.0f, scrollRect.width - 16f, scrollHeight);
+            
+            Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
+            GUI.BeginGroup(viewRect);
 
-            /*
-            var outRect = new Rect(0f, 10f + curY, innerRect.width, innerRect.height - curY);
-            var viewRect = new Rect(0f, 0f, innerRect.width - 16f, scrollViewHeight);
+            if (storedItems.Count < 1) Widgets.Label(viewRect, "NoItemsAreStoredHere".Translate());
+            
+            for (var i = 0; i < storedItems.Count; i++)
+                if (rows[i] == null)
+                    try
+                    {
+                        rows[i] = new DSGUI_TabItem(storedItems[i], Drop, boxHeight);
+                        rows[i].DoDraw(viewRect, i);
+                    }
+                    catch (Exception ex)
+                    {
+                        var err = scrollRect.ContractedBy(-4f);
+                        Widgets.Label(err, "Oops, something went wrong!");
+                        Log.Warning(ex.ToString());
+                    }
+                else
+                    rows[i].DoDraw(viewRect, i);
 
-            Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
+            scrollHeight = boxHeight * storedItems.Count;
 
-            curY = 0f;
-            if (storedItems.Count < 1)
-            {
-                Widgets.Label(viewRect, "NoItemsAreStoredHere".Translate());
-                curY += 22;
-            }
-
-            foreach (var t in storedItems)
-                DrawThingRow(ref curY, viewRect.width, t);
-
-            if (Event.current.type == EventType.Layout) scrollViewHeight = curY + 25f;
-
+            GUI.EndGroup();
             Widgets.EndScrollView();
 
+            /*
+            // if (Event.current.type == EventType.Layout) 
             // Search
             var searchRect = new Rect(innerRect);
             searchRect.x += 8f;
@@ -134,12 +175,14 @@ namespace DSGUI
             if (Widgets.ButtonImageFitted(searchRect, Widgets.CheckboxOffTex))
                 searchString = "";
             */
+            
             GUI.EndGroup();
             GUI.color = Color.white;
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        private static void DrawThingRow(ref float y, float width, Thing thing)
+        /*
+        private static void DrawThingRow(float y, float width, Thing thing)
         {
             width -= 24f;
             Widgets.InfoCardButton(width, y, thing);
@@ -171,7 +214,7 @@ namespace DSGUI
                 }
             }
 
-            width -= 60f; // Caravans use 100f
+            width -= 60f;
             var massRect = new Rect(width, y, 60f, 28f);
             CaravanThingsTabUtility.DrawMass(thing, massRect);
             var cr = thing.TryGetComp<CompRottable>();
@@ -219,7 +262,7 @@ namespace DSGUI
             }
 
             TooltipHandler.TipRegion(itemRect, text2);
-            y += 28f;
         }
+        */
     }
 }

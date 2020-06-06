@@ -92,10 +92,10 @@ namespace DSGUI
             scrollRect.height -= 49f;
             scrollRect.width -= 16f;
 
-            var listRect = new Rect(0.0f, 0.0f, scrollRect.width, RecipesScrollHeight);
+            var viewRect = new Rect(0.0f, 0.0f, scrollRect.width, RecipesScrollHeight);
 
-            Widgets.BeginScrollView(scrollRect, ref scrollPosition, listRect);
-            GUI.BeginGroup(listRect);
+            Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
+            GUI.BeginGroup(viewRect);
 
             for (var i = 0; i < thingList.Count; i++)
             {
@@ -123,13 +123,13 @@ namespace DSGUI
 
                 if (searchString.NullOrEmpty())
                 {
-                    rows[i].DoDraw(listRect, i);
+                    rows[i].DoDraw(viewRect, i);
                 }
                 else
                 {
                     if (!(rows[i].label.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0)) continue;
 
-                    rows[i].DoDraw(listRect, i);
+                    rows[i].DoDraw(viewRect, i);
                 }
             }
 

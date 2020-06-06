@@ -84,15 +84,25 @@ namespace DSGUI
                 }
 
                 EndLoop:
-                if (tab == null) tab = t.GetInspectTabs().OfType<DSGUI_TabModal>().FirstOrDefault();
+                if (tab == null && DSGUIMod.settings.DSGUI_Tab_EnableTab)
+                    tab = t.GetInspectTabs().OfType<DSGUI_TabModal>().First();
+                
+                if (tab == null)
+                    tab = t.GetInspectTabs().OfType<ITab_DeepStorage_Inventory>().First();
+                
                 if (tab == null)
                 {
-                    Log.Error("LWM Deep Storage object " + t + " does not have an inventory tab?");
+                    Log.Warning("[LWM] Deep Storage object " + t + " does not have an inventory tab?");
                     return false;
                 }
 
                 tab.OnOpen();
-                pane.OpenTabType = tab is DSGUI_TabModal ? typeof(DSGUI_TabModal) : typeof(ITab_Storage);
+                if (tab is DSGUI_TabModal)
+                    pane.OpenTabType = typeof(DSGUI_TabModal);
+                else if (tab is ITab_DeepStorage_Inventory)
+                    pane.OpenTabType = typeof(ITab_DeepStorage_Inventory);
+                else
+                    pane.OpenTabType = typeof(ITab_Storage);
 
                 return false;
             }
