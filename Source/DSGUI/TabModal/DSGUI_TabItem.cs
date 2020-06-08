@@ -18,6 +18,7 @@ namespace DSGUI
         public readonly string label;
         
         private readonly GUIStyle style;
+        private readonly Thing origTarget;
         private readonly Thing target;
         private readonly Color thingColor = Color.white;
         private readonly Texture2D thingIcon;
@@ -29,6 +30,7 @@ namespace DSGUI
         {
             iconScale = DSGUIMod.settings.DSGUI_Tab_IconScaling;
             height = DSGUIMod.settings.DSGUI_Tab_BoxHeight;
+            origTarget = t;
             target = t.GetInnerIfMinified();
             label = t.Label;
             dropIcon = icon;
@@ -102,8 +104,11 @@ namespace DSGUI
 
             if (DSGUI.Elements.ButtonInvisibleLabeled(Color.white, GameFont.Small, labelRect, label.CapitalizeFirst(), TextAnchor.MiddleLeft))
             {
+                if (origTarget.Map != Find.CurrentMap)
+                    return;
+                
                 Find.Selector.ClearSelection();
-                Find.Selector.Select(target);
+                Find.Selector.Select(origTarget);
             }
 
             if (Mouse.IsOver(itemRect))
