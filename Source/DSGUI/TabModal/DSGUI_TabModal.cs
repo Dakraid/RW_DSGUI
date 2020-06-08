@@ -96,10 +96,8 @@ namespace DSGUI
             }
             
             // if (Event.current.type == EventType.Layout) 
-            mainRect = new Rect(2f, 2f, size.x - 6f, size.y - 6f);
-            
-            GUI.BeginGroup(mainRect);
-            
+            mainRect = new Rect(4f, 2f, size.x - 8f, size.y - 6f);
+
             GUI.color = Color.white;
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -129,7 +127,7 @@ namespace DSGUI
             // Scrollable List
             var scrollRect = new Rect(mainRect);
             scrollRect.y += headRect.height + 10f;
-            scrollRect.height -= headRect.height + 10f - 38f;
+            scrollRect.height -= headRect.height + 48f;
 
             scrollHeight = storedItems.Count * DSGUIMod.settings.DSGUI_Tab_BoxHeight;
             var viewRect = new Rect(0.0f, 0.0f, scrollRect.width - 16f, scrollHeight);
@@ -139,7 +137,7 @@ namespace DSGUI
 
             if (storedItems.Count < 1) Widgets.Label(viewRect, "NoItemsAreStoredHere".Translate());
             
-            if (storedItems.Count >= 1 && rows.NullOrEmpty())
+            if (storedItems.Count >= 1 && (rows.NullOrEmpty() || rows[0] == null))
                 for (var i = 0; i < storedItems.Count; i++)
                     if (rows[i] == null)
                         try
@@ -153,15 +151,19 @@ namespace DSGUI
                             Log.Warning(ex.ToString());
                         }
 
+            if (DSGUIMod.settings.DSGUI_Tab_SortContent && rows.Length > 1)
+                rows = rows.OrderBy(x => x.label).ToArray();
+            
             if (searchString.NullOrEmpty())
             {
                 for (var i = 0; i < rows.Length; i++) rows[i].DoDraw(viewRect, i);
             }
             else
             {
-                var filteredRows = (List<DSGUI_TabItem>) rows.Where(x => x.label.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0);
-
-                for (var i = 0; i < filteredRows.Count; i++) filteredRows[i].DoDraw(viewRect, i);
+                var filteredRows = rows.Where(x => x.label.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0);
+                var dsguiTabItems = filteredRows as DSGUI_TabItem[] ?? filteredRows.ToArray();
+                
+                for (var i = 0; i < dsguiTabItems.Length; i++) dsguiTabItems[i].DoDraw(viewRect, i);
             }
             
             scrollHeight = boxHeight * storedItems.Count;
@@ -170,106 +172,14 @@ namespace DSGUI
             Widgets.EndScrollView();
 
             // Search
-            var searchRect = new Rect(mainRect);
-            searchRect.y += scrollRect.height + 10f;
-            searchRect.height = 28f;
-            searchRect.width -= 28f; // 16f for padding of 8f on each side + 28f for the clear button
-
-            DSGUI.Elements.InputField("Search", searchRect, ref searchString);
-
-            searchRect.x = searchRect.width + 6f + 16f;
-            searchRect.width = 28f;
-            Text.Anchor = TextAnchor.MiddleLeft;
-            if (Widgets.ButtonImageFitted(searchRect, Widgets.CheckboxOffTex))
-                searchString = "";
+            var search = new Rect(scrollRect);
+            search.x += 3f;
+            search.width -= 3f;
+            search.y += scrollRect.height + 10f;
+            DSGUI.Elements.SearchBar(search, 6f, ref searchString);
             
-            GUI.EndGroup();
             GUI.color = Color.white;
             Text.Anchor = TextAnchor.UpperLeft;
         }
-
-        /*
-        private static void DrawThingRow(float y, float width, Thing thing)
-        {
-            width -= 24f;
-            Widgets.InfoCardButton(width, y, thing);
-
-            width -= 24f;
-            var forbidRect = new Rect(width, y, 24f, 24f);
-            var allowFlag = !thing.IsForbidden(Faction.OfPlayer);
-            var tmpFlag = allowFlag;
-            TooltipHandler.TipRegion(forbidRect, allowFlag ? "CommandNotForbiddenDesc".Translate() : "CommandForbiddenDesc".Translate());
-            Widgets.Checkbox(forbidRect.x, forbidRect.y, ref allowFlag, 24f, false, true);
-            if (allowFlag != tmpFlag)
-                thing.SetForbidden(!allowFlag, false);
-
-            if (Settings.useEjectButton)
-            {
-                width -= 24f;
-                var yetAnotherRect = new Rect(width, y, 24f, 24f);
-                TooltipHandler.TipRegion(yetAnotherRect, "LWM.ContentsDropDesc".Translate());
-                if (Widgets.ButtonImage(yetAnotherRect, Drop, Color.gray, Color.white, false))
-                {
-                    var loc = thing.Position;
-                    var map = thing.Map;
-                    thing.DeSpawn();
-                    if (!GenPlace.TryPlaceThing(thing, loc, map, ThingPlaceMode.Near, null,
-                        newLoc => !map.thingGrid.ThingsListAtFast(newLoc).OfType<Building_Storage>().Any())) GenSpawn.Spawn(thing, loc, map);
-                    if (!thing.Spawned || thing.Position == loc)
-                        Messages.Message("You have filled the map.",
-                            new LookTargets(loc, map), MessageTypeDefOf.NegativeEvent);
-                }
-            }
-
-            width -= 60f;
-            var massRect = new Rect(width, y, 60f, 28f);
-            CaravanThingsTabUtility.DrawMass(thing, massRect);
-            var cr = thing.TryGetComp<CompRottable>();
-            if (cr != null)
-            {
-                var rotTicks = Math.Min(int.MaxValue, cr.TicksUntilRotAtCurrentTemp);
-                if (rotTicks < 36000000)
-                {
-                    width -= 60f;
-                    var rotRect = new Rect(width, y, 60f, 28f);
-                    GUI.color = Color.yellow;
-                    Widgets.Label(rotRect, (rotTicks / 60000f).ToString("0.#"));
-                    GUI.color = Color.white;
-                    TooltipHandler.TipRegion(rotRect, "DaysUntilRotTip".Translate());
-                }
-            }
-
-            var itemRect = new Rect(0f, y, width, 28f);
-            if (Mouse.IsOver(itemRect))
-            {
-                GUI.color = ITab_Pawn_Gear.HighlightColor;
-                GUI.DrawTexture(itemRect, TexUI.HighlightTex);
-            }
-
-            if (thing.def.DrawMatSingle != null && thing.def.DrawMatSingle.mainTexture != null) Widgets.ThingIcon(new Rect(4f, y, 28f, 28f), thing);
-            Text.Anchor = TextAnchor.MiddleLeft;
-            GUI.color = ITab_Pawn_Gear.ThingLabelColor;
-            var textRect = new Rect(36f, y, itemRect.width - 36f, itemRect.height);
-            var text = thing.LabelCap;
-            Text.WordWrap = false;
-            Widgets.Label(textRect, text.Truncate(textRect.width));
-            if (Widgets.ButtonInvisible(itemRect))
-            {
-                Find.Selector.ClearSelection();
-                Find.Selector.Select(thing);
-            }
-
-            Text.WordWrap = true;
-
-            var text2 = thing.DescriptionDetailed;
-            if (thing.def.useHitPoints)
-            {
-                var text3 = text2;
-                text2 = string.Concat(text3, "\n", thing.HitPoints, " / ", thing.MaxHitPoints);
-            }
-
-            TooltipHandler.TipRegion(itemRect, text2);
-        }
-        */
     }
 }

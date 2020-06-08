@@ -100,15 +100,11 @@ namespace DSGUI
                 TooltipHandler.TipRegion(itemRect, (TipSignal) toolTip);
             }
 
-            Text.Anchor = TextAnchor.MiddleLeft;
-            
-            if (DSGUI.Elements.ButtonInvisibleLabeled(Color.white, GameFont.Small, labelRect, label.CapitalizeFirst()))
+            if (DSGUI.Elements.ButtonInvisibleLabeled(Color.white, GameFont.Small, labelRect, label.CapitalizeFirst(), TextAnchor.MiddleLeft))
             {
                 Find.Selector.ClearSelection();
                 Find.Selector.Select(target);
             }
-
-            Text.Anchor = TextAnchor.UpperLeft;
 
             if (Mouse.IsOver(itemRect))
                 Widgets.DrawHighlight(itemRect);

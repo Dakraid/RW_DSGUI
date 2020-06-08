@@ -73,6 +73,8 @@ namespace DSGUI
                 bool forceFocus = false,
                 bool ShowName = false)
             {
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleCenter;
                 if (buff == null)
                     buff = "";
 
@@ -87,9 +89,7 @@ namespace DSGUI
 
                 if (ShowName)
                 {
-                    Text.Anchor = TextAnchor.MiddleCenter;
                     Widgets.Label(rect.LeftPart(0.2f), name);
-                    Text.Anchor = TextAnchor.UpperLeft;
                     rect = rect.RightPart(0.8f);
                 }
 
@@ -100,6 +100,21 @@ namespace DSGUI
                     GUI.FocusControl(name);
                 if (((!Input.GetMouseButtonDown(0) ? 0 : !Mouse.IsOver(rect) ? 1 : 0) & (flag ? 1 : 0)) != 0)
                     GUI.FocusControl(null);
+                
+                Text.Anchor = TextAnchor.UpperLeft;
+            }
+
+            public static void SearchBar(Rect rect, float gap, ref string input)
+            {
+                var searchRect = new Rect(rect) {height = 28f};
+                var searchField = searchRect.LeftPartPixels(searchRect.width - 28f - 1f - gap);
+                var clearBtn = searchRect.RightPartPixels(28f + 1f);
+
+                InputField("Search", searchField, ref input);
+
+                Text.Anchor = TextAnchor.MiddleLeft;
+                if (Widgets.ButtonImageFitted(clearBtn, Widgets.CheckboxOffTex))
+                    input = "";
             }
 
             public static void LabelAnchored(Rect rect, string label, TextAnchor textAnchor)
@@ -116,11 +131,11 @@ namespace DSGUI
                 GUI.color = Color.white;
             }
 
-            public static bool ButtonInvisibleLabeled(Color textColor, GameFont textSize, Rect inRect, string label)
+            public static bool ButtonInvisibleLabeled(Color textColor, GameFont textSize, Rect inRect, string label, TextAnchor anchor = TextAnchor.MiddleCenter)
             {
                 GUI.color = textColor;
                 Text.Font = textSize;
-                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.Anchor = anchor;
                 Widgets.Label(inRect, label);
                 Text.Anchor = TextAnchor.UpperLeft;
                 return Widgets.ButtonInvisible(inRect.ContractedBy(2f));
