@@ -30,5 +30,5 @@ steps:
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: '$(Build.SourcesDirectory)'
-    artifact: 'RW_DSGUI_$(Build.BuildId).zip'
+    artifact: 'RW_DSGUI_$(Build.BuildId)'
     publishLocation: 'pipeline'
