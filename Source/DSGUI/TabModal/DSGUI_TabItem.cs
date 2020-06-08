@@ -15,7 +15,7 @@ namespace DSGUI
     {
         private readonly float height;
         private readonly float iconScale;
-        private readonly string label;
+        public readonly string label;
         
         private readonly GUIStyle style;
         private readonly Thing target;
@@ -25,12 +25,11 @@ namespace DSGUI
 
         public DSGUI_TabItem(
             Thing t,
-            Texture2D icon,
-            float boxHeight)
+            Texture2D icon)
         {
             iconScale = DSGUIMod.settings.DSGUI_Tab_IconScaling;
-            height = boxHeight;
-            target = t;
+            height = DSGUIMod.settings.DSGUI_Tab_BoxHeight;
+            target = t.GetInnerIfMinified();
             label = t.Label;
             dropIcon = icon;
 
@@ -76,7 +75,7 @@ namespace DSGUI
             if (target.def.useHitPoints)
             {
                 var temp = toolTip;
-                toolTip = string.Concat(temp, "\nHP:", target.HitPoints, " / ", target.MaxHitPoints);
+                toolTip = string.Concat(temp, "\nHP: ", target.HitPoints, " / ", target.MaxHitPoints);
             }
 
             var cr = target.TryGetComp<CompRottable>();
@@ -101,7 +100,8 @@ namespace DSGUI
                 TooltipHandler.TipRegion(itemRect, (TipSignal) toolTip);
             }
 
-            Text.Anchor = TextAnchor.MiddleCenter;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            
             if (DSGUI.Elements.ButtonInvisibleLabeled(Color.white, GameFont.Small, labelRect, label.CapitalizeFirst()))
             {
                 Find.Selector.ClearSelection();

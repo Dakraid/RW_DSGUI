@@ -95,6 +95,7 @@ namespace DSGUI
                 lastStorage = buildingStorage;
             }
             
+            // if (Event.current.type == EventType.Layout) 
             mainRect = new Rect(2f, 2f, size.x - 6f, size.y - 6f);
             
             GUI.BeginGroup(mainRect);
@@ -128,7 +129,7 @@ namespace DSGUI
             // Scrollable List
             var scrollRect = new Rect(mainRect);
             scrollRect.y += headRect.height + 10f;
-            scrollRect.height -= (headRect.height + 10f);
+            scrollRect.height -= headRect.height + 10f - 38f;
 
             scrollHeight = storedItems.Count * DSGUIMod.settings.DSGUI_Tab_BoxHeight;
             var viewRect = new Rect(0.0f, 0.0f, scrollRect.width - 16f, scrollHeight);
@@ -138,34 +139,41 @@ namespace DSGUI
 
             if (storedItems.Count < 1) Widgets.Label(viewRect, "NoItemsAreStoredHere".Translate());
             
-            for (var i = 0; i < storedItems.Count; i++)
-                if (rows[i] == null)
-                    try
-                    {
-                        rows[i] = new DSGUI_TabItem(storedItems[i], Drop, boxHeight);
-                        rows[i].DoDraw(viewRect, i);
-                    }
-                    catch (Exception ex)
-                    {
-                        var err = scrollRect.ContractedBy(-4f);
-                        Widgets.Label(err, "Oops, something went wrong!");
-                        Log.Warning(ex.ToString());
-                    }
-                else
-                    rows[i].DoDraw(viewRect, i);
+            if (storedItems.Count >= 1 && rows.NullOrEmpty())
+                for (var i = 0; i < storedItems.Count; i++)
+                    if (rows[i] == null)
+                        try
+                        {
+                            rows[i] = new DSGUI_TabItem(storedItems[i], Drop);
+                        }
+                        catch (Exception ex)
+                        {
+                            var err = scrollRect.ContractedBy(-4f);
+                            Widgets.Label(err, "Oops, something went wrong!");
+                            Log.Warning(ex.ToString());
+                        }
 
+            if (searchString.NullOrEmpty())
+            {
+                for (var i = 0; i < rows.Length; i++) rows[i].DoDraw(viewRect, i);
+            }
+            else
+            {
+                var filteredRows = (List<DSGUI_TabItem>) rows.Where(x => x.label.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0);
+
+                for (var i = 0; i < filteredRows.Count; i++) filteredRows[i].DoDraw(viewRect, i);
+            }
+            
             scrollHeight = boxHeight * storedItems.Count;
 
             GUI.EndGroup();
             Widgets.EndScrollView();
 
-            /*
-            // if (Event.current.type == EventType.Layout) 
             // Search
-            var searchRect = new Rect(innerRect);
-            searchRect.x += 8f;
+            var searchRect = new Rect(mainRect);
+            searchRect.y += scrollRect.height + 10f;
             searchRect.height = 28f;
-            searchRect.width -= 40f + 16f; // 16f for padding of 8f on each side + 28f for the clear button
+            searchRect.width -= 28f; // 16f for padding of 8f on each side + 28f for the clear button
 
             DSGUI.Elements.InputField("Search", searchRect, ref searchString);
 
@@ -174,7 +182,6 @@ namespace DSGUI
             Text.Anchor = TextAnchor.MiddleLeft;
             if (Widgets.ButtonImageFitted(searchRect, Widgets.CheckboxOffTex))
                 searchString = "";
-            */
             
             GUI.EndGroup();
             GUI.color = Color.white;
