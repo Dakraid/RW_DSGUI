@@ -454,6 +454,9 @@ $RECYCLE.BIN/
 .idea
 .vs
 
+# Assemblies
+Assemblies/
+
 HugsLib.dll
 0Harmony.dll
 **/HugsLib.dll
