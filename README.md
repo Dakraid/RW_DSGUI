@@ -14,7 +14,7 @@ Both come with options for sorting, customizable appearance, and search function
 Right now there is no Workshop release as this is still considered a Work-In-Progress.
 
 Nonetheless, preview builds can be found in the Azure Pipelines CI: 
-- Latest approved Artifact (Build 17): [RW_DSGUI_16.zip](https://bit.ly/2XHM6I0)
+- Latest approved Artifact (Build 17): [RW_DSGUI_17.zip](https://bit.ly/2XHM6I0)
 
 Alternatively you can go for more recent, but not officially recommended downloads, following this:
 - Go to the Pipeline linked [here](https://dev.azure.com/Dakraid/RW_DSGUI/_build?definitionId=1)
