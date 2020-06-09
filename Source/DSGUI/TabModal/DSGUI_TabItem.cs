@@ -18,7 +18,6 @@ namespace DSGUI
         public readonly string label;
         
         private readonly GUIStyle style;
-        private readonly Thing origTarget;
         private readonly Thing target;
         private readonly Color thingColor = Color.white;
         private readonly Texture2D thingIcon;
@@ -30,15 +29,22 @@ namespace DSGUI
         {
             iconScale = DSGUIMod.settings.DSGUI_Tab_IconScaling;
             height = DSGUIMod.settings.DSGUI_Tab_BoxHeight;
-            origTarget = t;
-            target = t.GetInnerIfMinified();
+            target = t;
             label = t.Label;
             dropIcon = icon;
 
             try
             {
-                thingIcon = target.def.uiIcon;
-                thingColor = target.def.uiIconColor;
+                if (target.GetInnerIfMinified() != target)
+                {
+                    thingIcon = target.GetInnerIfMinified().def.uiIcon;
+                    thingColor = target.GetInnerIfMinified().def.uiIconColor;
+                }
+                else
+                {
+                    thingIcon = target.def.uiIcon;
+                    thingColor = target.def.uiIconColor;
+                }
             }
             catch
             {
@@ -104,11 +110,11 @@ namespace DSGUI
 
             if (DSGUI.Elements.ButtonInvisibleLabeled(Color.white, GameFont.Small, labelRect, label.CapitalizeFirst(), TextAnchor.MiddleLeft))
             {
-                if (origTarget.Map != Find.CurrentMap)
+                if (target.Map != Find.CurrentMap)
                     return;
                 
                 Find.Selector.ClearSelection();
-                Find.Selector.Select(origTarget);
+                Find.Selector.Select(target);
             }
 
             if (Mouse.IsOver(itemRect))
@@ -122,9 +128,9 @@ namespace DSGUI
 
             if (Settings.useEjectButton)
             {
-                var yetAnotherRect = new Rect(xPos, heightPos, 24f, 24f);
-                TooltipHandler.TipRegion(yetAnotherRect, "LWM.ContentsDropDesc".Translate());
-                if (Widgets.ButtonImage(yetAnotherRect, dropIcon, Color.gray, Color.white, false))
+                var ejectRect = new Rect(xPos, heightPos, 24f, 24f);
+                TooltipHandler.TipRegion(ejectRect, "LWM.ContentsDropDesc".Translate());
+                if (Widgets.ButtonImage(ejectRect, dropIcon, Color.gray, Color.white, false))
                 {
                     var loc = target.Position;
                     var map = target.Map;
