@@ -24,10 +24,12 @@ namespace DSGUI
         
         private DSGUI_TabItem[] rows;
         private List<Thing> storedItems;
+        private List<Thing> lastStoredItem;
         private Building_Storage buildingStorage;
         private CompDeepStorage deepStorageComp;
+        private float totalWeight = 0;
         private string curWeight, maxWeight;
-        private int curCount, maxCount, minCount;
+        private int curCount, maxCount, minCount, slotCount;
         
         private static Building_Storage lastStorage;
 
@@ -47,55 +49,63 @@ namespace DSGUI
             boxHeight = DSGUIMod.settings.DSGUI_List_BoxHeight;
         }
 
-        private void getStorageProperties()
+        private List<Thing> getStoredItems()
         {
-            deepStorageComp = buildingStorage?.GetComp<CompDeepStorage>();
-
             var slotCells = (deepStorageComp?.parent as Building_Storage)?.AllSlotCells().ToList();
             
             if (slotCells == null)
-                return;
-            
-            float totalWeight = 0;
+                return null;
+
+            var result = new List<Thing>();
+
+            totalWeight = 0;
+            slotCount = slotCells.Count;
             foreach (var allSlotCell in slotCells)
             {
                 float sum = 0;
                 foreach (var thing in deepStorageComp.parent.Map.thingGrid.ThingsListAt(allSlotCell).Where(thing => thing.Spawned && thing.def.EverStorable(false)))
                 {
-                    storedItems.Add(thing);
+                    result.Add(thing);
                     sum += thing.GetStatValue(deepStorageComp.stat) * thing.stackCount;
                 }
 
                 totalWeight += sum;
             }
 
-            storedItems = storedItems.OrderBy(x => x.def.defName).ThenByDescending(x =>
+            return result;
+            
+            /*.OrderBy(x => x.def.defName).ThenByDescending(x =>
             {
                 x.TryGetQuality(out var c);
                 return (int) c;
-            }).ThenByDescending(x => x.HitPoints / x.MaxHitPoints).ToList();
-            
+            }).ThenByDescending(x => x.HitPoints / x.MaxHitPoints).ToList();*/
+        }
+
+        private void getStorageProperties()
+        {
             curCount = storedItems.Count;
             curWeight = totalWeight.ToString("0.##");
-            minCount = deepStorageComp.minNumberStacks * slotCells.Count;
-            maxCount = deepStorageComp.maxNumberStacks * slotCells.Count;
-            var tempMax = deepStorageComp.limitingTotalFactorForCell * slotCells.Count;
+            minCount = deepStorageComp.minNumberStacks * slotCount;
+            maxCount = deepStorageComp.maxNumberStacks * slotCount;
+            var tempMax = deepStorageComp.limitingTotalFactorForCell * slotCount;
             maxWeight = tempMax > 0 ? tempMax.ToString("0.##") : "inf.";
         }
 
         protected override void FillTab()
         {
             buildingStorage = SelThing as Building_Storage;
-            if (buildingStorage != lastStorage)
+            deepStorageComp = buildingStorage?.GetComp<CompDeepStorage>();
+            storedItems = getStoredItems();
+
+            if (buildingStorage != lastStorage || !storedItems.Equals(lastStoredItem))
             {
-                storedItems = new List<Thing>();
                 getStorageProperties();
                 rows = new DSGUI_TabItem[storedItems.Count];
 
                 lastStorage = buildingStorage;
+                lastStoredItem = new List<Thing>(storedItems);
             }
             
-            // if (Event.current.type == EventType.Layout) 
             mainRect = new Rect(4f, 2f, size.x - 8f, size.y - 6f);
 
             GUI.color = Color.white;
