@@ -2,7 +2,7 @@
 
 <LanguageData>
   <DSGUI_Label>Netrve's DeepStorage GUI</DSGUI_Label>
-  <DSGUI_Warn>Requires DeepStorage's right click to be disabled!</DSGUI_Warn>
+  <DSGUI_Warn>Incompatible with other mods patching FloatMenuMapMaker.TryMakeFloatMenu</DSGUI_Warn>
   
   <DSGUI_List_Label>Context Menu</DSGUI_List_Label>
   <DSGUI_List_SortOrders>Sort Orders</DSGUI_List_SortOrders>
@@ -12,6 +12,14 @@
   <DSGUI_List_IconScaling>Icon Scaling</DSGUI_List_IconScaling>
   <DSGUI_List_BoxHeight>Scrollbox Item Height</DSGUI_List_BoxHeight>
   <DSGUI_List_FontSize>Font Size</DSGUI_List_FontSize>
+
+  <DSGUI_Tab_EnableTab>Enable use of the new Storage Tab</DSGUI_Tab_EnableTab>
+  <DSGUI_Tab_SortContent>Sort Tab Contents</DSGUI_Tab_SortContent>
+  <DSGUI_Tab_DrawDividersRows>Draw Divider Between Rows</DSGUI_Tab_DrawDividersRows>
+  <DSGUI_Tab_DrawDividersColumns>Draw Divider Between Columns</DSGUI_Tab_DrawDividersColumns>
+  <DSGUI_Tab_IconScaling>Icon Scaling</DSGUI_Tab_IconScaling>
+  <DSGUI_Tab_BoxHeight>Scrollbox Item Height</DSGUI_Tab_BoxHeight>
+  <DSGUI_Tab_FontSize>Font Size (Currently Unused)</DSGUI_Tab_FontSize>
   
   <DSGUI_ResetBtn>Reset to Defaults</DSGUI_ResetBtn>
 </LanguageData>
