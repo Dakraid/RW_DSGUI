@@ -1,6 +1,6 @@
 # Netrve's DeepStorage GUI
 
-[![Build Status](https://dev.azure.com/Dakraid/RW_DSGUI/_apis/build/status/Dakraid.RW_DSGUI?branchName=master)](https://dev.azure.com/Dakraid/RW_DSGUI/_build/latest?definitionId=1)
+[![Build Status](https://dev.azure.com/Dakraid/RW_DSGUI/_apis/build/status/Dakraid.RW_DSGUI?branchName=master)](https://dev.azure.com/Dakraid/RW_DSGUI/_build?definitionId=1)
 
 A Mod-Mod for LittleWhiteMouse's DeepStorage ([Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1617282896)) that overhauls the user interface it offers.
 
