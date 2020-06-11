@@ -18,7 +18,6 @@ namespace DSGUI
         private readonly Texture2D menuIcon = ContentFinder<Texture2D>.Get("UI/Buttons/MainButtons/Menu");
 
         private readonly List<FloatMenuOption> orders = new List<FloatMenuOption>();
-        private readonly Thing origTarget;
         private readonly Pawn pawn;
         private readonly GUIStyle style;
         private readonly Thing target;
@@ -33,15 +32,22 @@ namespace DSGUI
         {
             iconScale = DSGUIMod.settings.DSGUI_List_IconScaling;
             height = boxHeight;
-            origTarget = t;
             target = t.GetInnerIfMinified();
             label = t.Label;
             pawn = p;
 
             try
             {
-                thingIcon = target.def.uiIcon;
-                thingColor = target.def.uiIconColor;
+                if (target.GetInnerIfMinified() != target)
+                {
+                    thingIcon = target.GetInnerIfMinified().def.uiIcon;
+                    thingColor = target.GetInnerIfMinified().def.uiIconColor;
+                }
+                else
+                {
+                    thingIcon = target.def.uiIcon;
+                    thingColor = target.def.uiIconColor;
+                }
             }
             catch
             {
@@ -76,11 +82,11 @@ namespace DSGUI
 
             if (DSGUI.Elements.ButtonInvisibleLabeledFree(Color.white, GameFont.Small, itemRect.RightPart(0.85f), label.CapitalizeFirst(), style))
             {
-                if (pawn.Map != origTarget.Map)
+                if (pawn.Map != target.Map)
                     return;
 
                 Find.Selector.ClearSelection();
-                Find.Selector.Select(origTarget);
+                Find.Selector.Select(target);
                 Find.WindowStack.TryRemove(typeof(DSGUI_ListModal));
             }
 

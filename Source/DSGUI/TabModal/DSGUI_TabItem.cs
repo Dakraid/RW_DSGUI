@@ -17,8 +17,8 @@ namespace DSGUI
         private readonly float iconScale;
         public readonly string label;
         
+        public readonly Thing target;
         private readonly GUIStyle style;
-        private readonly Thing target;
         private readonly Color thingColor = Color.white;
         private readonly Texture2D thingIcon;
         private readonly Texture2D dropIcon;
@@ -97,10 +97,10 @@ namespace DSGUI
                     GUI.color = Color.yellow;
                     DSGUI.Elements.LabelAnchored(labelRect.RightPartPixels(rotLabelWidth), (rotTicks / 60000f).ToString("0.#") + " days", TextAnchor.MiddleCenter);
                     GUI.color = Color.white;
-                    TooltipHandler.TipRegion(labelRect.RightPartPixels(rotLabelWidth), "DaysUntilRotTip".Translate());
+                    TooltipHandler.TipRegion(labelRect.RightPartPixels(rotLabelWidth), "DaysUntilRotTip".TranslateSimple());
                 }
 
-                labelRect = itemRect.LeftPartPixels(itemRect.width - rotLabelWidth);
+                labelRect = labelRect.LeftPartPixels(labelRect.width - rotLabelWidth);
                 TooltipHandler.TipRegion(labelRect, (TipSignal) toolTip);
             }
             else
@@ -129,7 +129,7 @@ namespace DSGUI
             if (Settings.useEjectButton)
             {
                 var ejectRect = new Rect(xPos, heightPos, 24f, 24f);
-                TooltipHandler.TipRegion(ejectRect, "LWM.ContentsDropDesc".Translate());
+                TooltipHandler.TipRegion(ejectRect, "LWM.ContentsDropDesc".TranslateSimple());
                 if (Widgets.ButtonImage(ejectRect, dropIcon, Color.gray, Color.white, false))
                 {
                     var loc = target.Position;
@@ -147,7 +147,7 @@ namespace DSGUI
             var forbidRect = new Rect(xPos, heightPos, 24f, 24f);
             var allowFlag = !target.IsForbidden(Faction.OfPlayer);
             var tmpFlag = allowFlag;
-            TooltipHandler.TipRegion(forbidRect, allowFlag ? "CommandNotForbiddenDesc".Translate() : "CommandForbiddenDesc".Translate());
+            TooltipHandler.TipRegion(forbidRect, allowFlag ? "CommandNotForbiddenDesc".TranslateSimple() : "CommandForbiddenDesc".TranslateSimple());
             Widgets.Checkbox(forbidRect.x, forbidRect.y, ref allowFlag, 24f, false, true);
             if (allowFlag != tmpFlag)
                 target.SetForbidden(!allowFlag, false);
