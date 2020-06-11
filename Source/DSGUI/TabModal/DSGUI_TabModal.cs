@@ -125,17 +125,15 @@ namespace DSGUI
             GUI.BeginGroup(viewRect);
 
             if (DSGUIMod.settings.DSGUI_Tab_SortContent && rows.Count > 1)
-                rows = rows.OrderBy(x => x.label).ToList();
-            
-            /*
-            .ThenByDescending(x =>
-                {
-                    x.target.TryGetQuality(out var c);
-                    return (int) c;
-                }).ThenByDescending(x => x.target.HitPoints / x.target.MaxHitPoints).ToArray();
-            */
+                if (DSGUIMod.settings.DSGUI_Tab_AdvSortContent)
+                    rows = rows.OrderBy(x => x.label).ThenByDescending(x =>
+                    {
+                        x.target.TryGetQuality(out var c);
+                        return (int) c;
+                    }).ThenByDescending(x => x.target.HitPoints / x.target.MaxHitPoints).ToList();
+                else
+                    rows = rows.OrderBy(x => x.label).ToList();
 
-            
             if (rows.Count == 0)
             {
                 Widgets.Label(viewRect, "NoItemsAreStoredHere".TranslateSimple());
