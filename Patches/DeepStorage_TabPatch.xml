@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!--  A Deep Storage RimFridge
-      Requested by multiple people on Steam
-      Brought to you by LWM
-      -->
 <Patch>
 	<Operation Class="PatchOperationFindMod">
 		<mods>

@@ -97,6 +97,7 @@ namespace DSGUI
             Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
             GUI.BeginGroup(viewRect);
 
+            Log.Message("[DSGUI] Populating ListModal by generating ListItems");
             for (var i = 0; i < thingList.Count; i++)
             {
                 var viewElement = new Rect(0.0f, boxHeight * i, inRect.width, boxHeight);

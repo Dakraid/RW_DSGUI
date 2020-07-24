@@ -1,7 +1,10 @@
 ﻿using System.Linq;
+using AchtungMod;
 using HarmonyLib;
 using LWM.DeepStorage;
 using RimWorld;
+using UnityEngine;
+using UnityEngine.UI;
 using Verse;
 
 namespace DSGUI
@@ -17,6 +20,30 @@ namespace DSGUI
 
             // We patch all as we use annotations
             harmony.PatchAll();
+
+            if (!DSGUIMain.modAchtungLoaded)
+                return;
+            
+            var methodInfoAchtung = AccessTools.Method(typeof(Controller), "MouseDown");
+            var prefixAchtung = typeof(Patch_Achtung_Controller).GetMethod("Prefix");
+
+            harmony.Patch(methodInfoAchtung, new HarmonyMethod(prefixAchtung));
+        }
+        
+        static class Patch_Achtung_Controller
+        {
+            private static Controller controller = Controller.GetInstance();
+            
+            public static bool Prefix(Vector3 pos)
+            {
+                var colonist = Find.Selector.SelectedObjects.OfType<Pawn>()
+                    .Where(pawn => pawn.IsColonistPlayerControlled && pawn.Downed == false).ToList();
+                
+                if (colonist.EnumerableNullOrEmpty() || colonist.Count > 1)
+                    return true;
+                
+                return DSGUI.Create(pos, colonist.First());
+            }
         }
 
         [HarmonyPatch(typeof(FloatMenuMakerMap), "TryMakeFloatMenu")]
@@ -97,12 +124,12 @@ namespace DSGUI
                 }
 
                 tab.OnOpen();
-                if (tab is DSGUI_TabModal)
-                    pane.OpenTabType = typeof(DSGUI_TabModal);
-                else if (tab is ITab_DeepStorage_Inventory)
-                    pane.OpenTabType = typeof(ITab_DeepStorage_Inventory);
-                else
-                    pane.OpenTabType = typeof(ITab_Storage);
+                pane.OpenTabType = tab switch
+                {
+                    DSGUI_TabModal _ => typeof(DSGUI_TabModal),
+                    ITab_DeepStorage_Inventory _ => typeof(ITab_DeepStorage_Inventory),
+                    _ => typeof(ITab_Storage)
+                };
 
                 return false;
             }

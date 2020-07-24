@@ -34,7 +34,7 @@ namespace DSGUI
         public DSGUI_TabModal()
         {
             size = new Vector2(520f, 460f);
-            labelKey = " Contents ";
+            labelKey = "Contents";
             boxHeight = DSGUIMod.settings.DSGUI_List_BoxHeight;
         }
 
@@ -98,7 +98,7 @@ namespace DSGUI
             headInfo.y += 1f;
             headInfo.width -= 26f;
 
-            Widgets.Label(headTitle, labelKey.TranslateSimple());
+            Widgets.Label(headTitle, labelKey);
 
             DSGUI.Elements.SeparatorVertical(headTitle.width + 2f, headRect.y, headRect.height);
 

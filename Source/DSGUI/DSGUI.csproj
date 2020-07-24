@@ -57,6 +57,10 @@
       </PackageReference>
     </ItemGroup>
     <ItemGroup>
+      <Reference Include="AchtungMod, Version=2.3.3.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\..\Achtung2\Assemblies\AchtungMod.dll</HintPath>
+        <Private>False</Private>
+      </Reference>
       <Reference Include="IHoldMultipleThings, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\PrivateReferences\IHoldMultipleThings.dll</HintPath>
         <Private>False</Private>
