@@ -46,9 +46,7 @@
         <Compile Include="Util\DSGUI_Harmony.cs" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Krafs.Rimworld.Ref" Version="1.1.2654">
-          <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
+      <PackageReference Include="Krafs.Rimworld.Ref" Version="1.1.2654" />
       <PackageReference Include="Lib.Harmony" Version="2.0.1">
           <PrivateAssets>all</PrivateAssets>
       </PackageReference>
@@ -57,10 +55,6 @@
       </PackageReference>
     </ItemGroup>
     <ItemGroup>
-      <Reference Include="AchtungMod, Version=2.3.3.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\..\Achtung2\Assemblies\AchtungMod.dll</HintPath>
-        <Private>False</Private>
-      </Reference>
       <Reference Include="IHoldMultipleThings, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\PrivateReferences\IHoldMultipleThings.dll</HintPath>
         <Private>False</Private>

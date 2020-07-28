@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -26,7 +27,7 @@ namespace DSGUI
         private readonly DSGUI_ListItem[] rows;
         private Rect GizmoListRect;
 
-        public DSGUI_ListModal(Pawn p, List<Thing> lt, Vector3 pos)
+        public DSGUI_ListModal(Pawn p, IEnumerable<Thing> lt, Vector3 pos)
         {
             onlyOneOfTypeAllowed = true;
             closeOnClickedOutside = true;
@@ -40,9 +41,7 @@ namespace DSGUI
             cpos = pos;
             pawn = p;
 
-            lt.RemoveAll(t => t.def.category != ThingCategory.Item || t is Mote);
             thingList = new List<Thing>(lt);
-
             rows = new DSGUI_ListItem[thingList.Count];
 
             boxHeight = DSGUIMod.settings.DSGUI_List_BoxHeight;
@@ -97,7 +96,6 @@ namespace DSGUI
             Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
             GUI.BeginGroup(viewRect);
 
-            Log.Message("[DSGUI] Populating ListModal by generating ListItems");
             for (var i = 0; i < thingList.Count; i++)
             {
                 var viewElement = new Rect(0.0f, boxHeight * i, inRect.width, boxHeight);
@@ -108,7 +106,7 @@ namespace DSGUI
                     {
                         var index = pawn.Map.cellIndices.CellToIndex(cpos.ToIntVec3());
                         var listArray = (List<Thing>[]) thingListTG.GetValue(pawn.Map.thingGrid);
-                        var origList = listArray[index];
+                        var origList = new List<Thing>(listArray[index]);
 
                         listArray[index] = new List<Thing> {thingList[i]};
                         rows[i] = new DSGUI_ListItem(pawn, thingList[i], cpos, boxHeight);

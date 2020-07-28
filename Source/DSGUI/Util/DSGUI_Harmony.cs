@@ -1,10 +1,8 @@
 ﻿using System.Linq;
-using AchtungMod;
 using HarmonyLib;
 using LWM.DeepStorage;
 using RimWorld;
 using UnityEngine;
-using UnityEngine.UI;
 using Verse;
 
 namespace DSGUI
@@ -20,39 +18,26 @@ namespace DSGUI
 
             // We patch all as we use annotations
             harmony.PatchAll();
-
-            if (!DSGUIMain.modAchtungLoaded)
-                return;
-            
-            var methodInfoAchtung = AccessTools.Method(typeof(Controller), "MouseDown");
-            var prefixAchtung = typeof(Patch_Achtung_Controller).GetMethod("Prefix");
-
-            harmony.Patch(methodInfoAchtung, new HarmonyMethod(prefixAchtung));
         }
         
-        static class Patch_Achtung_Controller
+        [HarmonyBefore("net.pardeike.rimworld.mods.achtung")]
+        [HarmonyPatch(typeof(Selector), "HandleMapClicks")]
+        public static class Selector_HandleMapClicks_Patch
         {
-            private static Controller controller = Controller.GetInstance();
-            
-            public static bool Prefix(Vector3 pos)
+            public static bool Prefix()
             {
-                var colonist = Find.Selector.SelectedObjects.OfType<Pawn>()
+                var result = true;
+                var pos = UI.MouseMapPosition();
+                var target = Find.Selector.SelectedObjects.OfType<Pawn>()
                     .Where(pawn => pawn.IsColonistPlayerControlled && pawn.Downed == false).ToList();
-                
-                if (colonist.EnumerableNullOrEmpty() || colonist.Count > 1)
+    
+                if (target.EnumerableNullOrEmpty() || target.Count > 1)
                     return true;
-                
-                return DSGUI.Create(pos, colonist.First());
-            }
-        }
 
-        [HarmonyPatch(typeof(FloatMenuMakerMap), "TryMakeFloatMenu")]
-        private static class Patch_TryMakeFloatMenu
-        {
-            [HarmonyPriority(Priority.First)]
-            private static bool Prefix(Pawn pawn)
-            {
-                return DSGUI.Create(UI.MouseMapPosition(), pawn);
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
+                    result = DSGUI.Create(pos, target.First());
+
+                return result;
             }
         }
 

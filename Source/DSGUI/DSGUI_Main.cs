@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LWM.DeepStorage;
 using UnityEngine;
 using Verse;
+
+// TODO: Add comments and explanations to the code
 
 namespace DSGUI
 {
@@ -15,11 +18,11 @@ namespace DSGUI
     [StaticConstructorOnStartup]
     public static class DSGUIMain
     {
-        public static bool modAchtungLoaded => ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "Achtung!" || m.PackageId == "brrainz.achtung");
+        public static bool modSimplyLoaded => ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "[JDS] Simply Storage" || m.PackageId == "jangodsoul.simplystorage");
         
         static DSGUIMain()
         {
-            Settings.useDeepStorageRightClickLogic = false;
+            // Placeholder
         }
     }
 
@@ -44,15 +47,29 @@ namespace DSGUI
                 return true;
             }
 
-            var target = buildingList.Any(building => building.AllComps.Find(x => x is IHoldMultipleThings.IHoldMultipleThings) != null);
+            var storageUnit = buildingList.Find(building => building.AllComps.Find(x => x is IHoldMultipleThings.IHoldMultipleThings) != null);
 
-            if (!target)
+            if (storageUnit == null || storageUnit.DestroyedOrNull())
             {
                 Log.Message("[DSGUI] Found no valid target.");
                 return true;
             }
-
+            
             var thingList = new List<Thing>(c.GetThingList(pawn.Map));
+
+            /*
+            if (DSGUIMain.modSimplyLoaded && storageUnit.def.modContentPack.PackageId == "jangodsoul.simplystorage")
+            {
+                var storageComp = (CompDeepStorage) storageUnit.AllComps.Find(x => x is CompDeepStorage);
+                thingList = new List<Thing>(storageComp.getContentsHeader(out _, out _));
+            }
+            else
+            {
+                thingList = new List<Thing>(c.GetThingList(pawn.Map));
+            }
+            */
+            
+            thingList.RemoveAll(t => t.def.category != ThingCategory.Item || t is Mote);
 
             if (thingList.EnumerableNullOrEmpty())
             {

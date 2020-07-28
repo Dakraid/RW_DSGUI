@@ -10,18 +10,20 @@ namespace DSGUI
     public class DSGUI_ListItem
     {
         // Allow calling AddHumanlikeOrders
-        private readonly MethodInfo AHlO = AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders");
+        private readonly MethodInfo CAF = AccessTools.Method(typeof(FloatMenuMakerMap), "ChoicesAtFor");
+        // private readonly MethodInfo AHlO = AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders");
+        // private readonly MethodInfo ADO = AccessTools.Method(typeof(FloatMenuMakerMap), "AddDraftedOrders");
 
         private readonly float height;
         private readonly float iconScale;
         public readonly string label;
         private readonly Texture2D menuIcon = ContentFinder<Texture2D>.Get("UI/Buttons/MainButtons/Menu");
 
-        private readonly List<FloatMenuOption> orders = new List<FloatMenuOption>();
+        private readonly List<FloatMenuOption> orders;
         private readonly Pawn pawn;
         private readonly GUIStyle style;
         private readonly Thing target;
-        private readonly Color thingColor = Color.white;
+        private readonly Color thingColor;
         private readonly Texture2D thingIcon;
 
         public DSGUI_ListItem(
@@ -36,26 +38,24 @@ namespace DSGUI
             label = t.Label;
             pawn = p;
 
-            try
+            if (target.GetInnerIfMinified() != target)
             {
-                if (target.GetInnerIfMinified() != target)
-                {
-                    thingIcon = target.GetInnerIfMinified().def.uiIcon;
-                    thingColor = target.GetInnerIfMinified().def.uiIconColor;
-                }
-                else
-                {
-                    thingIcon = target.def.uiIcon;
-                    thingColor = target.def.uiIconColor;
-                }
+                thingIcon = target.GetInnerIfMinified().def.uiIcon;
+                thingColor = target.GetInnerIfMinified().def.uiIconColor;
             }
-            catch
+            else if (target.def.IsCorpse)
             {
-                Log.Warning($"[DSGUI] Thing {t.def.defName} has no UI icon.");
-                thingIcon = Texture2D.blackTexture;
+                thingIcon = target.Graphic.MatSingle.GetMaskTexture();
+                thingColor = target.Graphic.Color;
+            }
+            else
+            {
+                thingIcon = target.def.uiIcon;
+                thingColor = target.def.uiIconColor;
             }
 
-            AHlO.Invoke(null, new object[] {clickPos, pawn, orders});
+            // AHlO.Invoke(null, new object[] {clickPos, pawn, orders});
+            orders = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {clickPos, pawn});
 
             style = new GUIStyle(Text.CurFontStyle)
             {
@@ -95,12 +95,12 @@ namespace DSGUI
 
             if (orders.Count > 0)
             {
-                if (DSGUI.Elements.ButtonImageFittedScaled(actionRect, menuIcon, iconScale)) DSGUI.Elements.TryMakeFloatMenu(pawn, orders, target.LabelCapNoCount);
+                if (DSGUI.Elements.ButtonImageFittedScaled(actionRect, menuIcon, iconScale)) DSGUI.Elements.TryMakeFloatMenu(orders, target.LabelCapNoCount);
             }
             else
             {
                 DSGUI.Elements.DrawIconFitted(actionRect, menuIcon, Color.gray, iconScale);
-                TooltipHandler.TipRegion(actionRect, "No orders available");
+                TooltipHandler.TipRegion(actionRect, "No Orders Available");
             }
 
             if (Mouse.IsOver(actionRect))

@@ -208,7 +208,7 @@ namespace DSGUI
                 GUI.Label(position, label, style);
             }
 
-            public static void TryMakeFloatMenu(Pawn pawn, List<FloatMenuOption> options, string title)
+            public static void TryMakeFloatMenu(List<FloatMenuOption> options, string title)
             {
                 if (options.Count == 0)
                     return;
