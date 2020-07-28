@@ -55,9 +55,9 @@ namespace DSGUI
                 return true;
             }
             
-            var thingList = new List<Thing>(c.GetThingList(pawn.Map));
+            // var thingList = new List<Thing>(c.GetThingList(pawn.Map));
+            List<Thing> thingList;
 
-            /*
             if (DSGUIMain.modSimplyLoaded && storageUnit.def.modContentPack.PackageId == "jangodsoul.simplystorage")
             {
                 var storageComp = (CompDeepStorage) storageUnit.AllComps.Find(x => x is CompDeepStorage);
@@ -67,7 +67,6 @@ namespace DSGUI
             {
                 thingList = new List<Thing>(c.GetThingList(pawn.Map));
             }
-            */
             
             thingList.RemoveAll(t => t.def.category != ThingCategory.Item || t is Mote);
 
