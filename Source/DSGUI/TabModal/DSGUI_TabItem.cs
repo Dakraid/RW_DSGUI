@@ -77,7 +77,8 @@ namespace DSGUI
             var labelRect = itemRect.RightPart(0.85f);
 
             // Draw the thing icon
-            DSGUI.Elements.DrawIconFitted(iconRect, thingIcon, thingColor, iconScale);
+            // DSGUI.Elements.DrawIconFitted(iconRect, thingIcon, thingColor, iconScale);
+            DSGUI.Elements.DrawThingIcon(iconRect, target, iconScale);
 
             var toolTip = target.DescriptionDetailed;
             if (target.def.useHitPoints)

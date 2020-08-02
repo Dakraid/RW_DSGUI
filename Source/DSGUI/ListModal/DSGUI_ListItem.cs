@@ -23,8 +23,6 @@ namespace DSGUI
         private readonly Pawn pawn;
         private readonly GUIStyle style;
         private readonly Thing target;
-        private readonly Color thingColor;
-        private readonly Texture2D thingIcon;
 
         public DSGUI_ListItem(
             Pawn p,
@@ -38,23 +36,6 @@ namespace DSGUI
             label = t.Label;
             pawn = p;
 
-            if (target.GetInnerIfMinified() != target)
-            {
-                thingIcon = target.GetInnerIfMinified().def.uiIcon;
-                thingColor = target.GetInnerIfMinified().def.uiIconColor;
-            }
-            else if (target.def.IsCorpse)
-            {
-                thingIcon = target.Graphic.MatSingle.GetMaskTexture();
-                thingColor = target.Graphic.Color;
-            }
-            else
-            {
-                thingIcon = target.def.uiIcon;
-                thingColor = target.def.uiIconColor;
-            }
-
-            // AHlO.Invoke(null, new object[] {clickPos, pawn, orders});
             orders = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {clickPos, pawn});
 
             style = new GUIStyle(Text.CurFontStyle)
@@ -77,7 +58,9 @@ namespace DSGUI
             var iconRect = itemRect.LeftPart(0.15f).ContractedBy(2f);
             var labelRect = itemRect.RightPart(0.85f);
 
-            DSGUI.Elements.DrawIconFitted(iconRect, thingIcon, thingColor, iconScale);
+            // Widgets.ThingIcon(iconRect, target);
+            // DSGUI.Elements.DrawIconFitted(iconRect, thingIcon, thingColor, iconScale);
+            DSGUI.Elements.DrawThingIcon(iconRect, target, iconScale);
             TooltipHandler.TipRegion(labelRect, (TipSignal) target.def.description);
 
             if (DSGUI.Elements.ButtonInvisibleLabeledFree(Color.white, GameFont.Small, itemRect.RightPart(0.85f), label.CapitalizeFirst(), style))

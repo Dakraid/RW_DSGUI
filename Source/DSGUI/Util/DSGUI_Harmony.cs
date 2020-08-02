@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using HarmonyLib;
 using LWM.DeepStorage;
 using RimWorld;
@@ -97,14 +98,28 @@ namespace DSGUI
 
                 EndLoop:
                 if (tab == null && DSGUIMod.settings.DSGUI_Tab_EnableTab)
-                    tab = t.GetInspectTabs().OfType<DSGUI_TabModal>().First();
+                    try
+                    {
+                        tab = t.GetInspectTabs().OfType<DSGUI_TabModal>().First();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Warning("[DSGUI] Could mpt get DSGUI_TabModel, trying default. (" + e + ")");
+                    }
                 
                 if (tab == null)
-                    tab = t.GetInspectTabs().OfType<ITab_DeepStorage_Inventory>().First();
+                    try
+                    {
+                        tab = t.GetInspectTabs().OfType<ITab_DeepStorage_Inventory>().First();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Warning("[DSGUI] Could mpt get DSGUI_TabModel, trying default. (" + e + ")");
+                    }
                 
                 if (tab == null)
                 {
-                    Log.Warning("[LWM] Deep Storage object " + t + " does not have an inventory tab?");
+                    Log.Error("[DSGUI] Deep Storage object " + t + " does not have an inventory tab?");
                     return false;
                 }
 

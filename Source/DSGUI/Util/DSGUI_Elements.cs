@@ -207,6 +207,70 @@ namespace DSGUI
 
                 GUI.Label(position, label, style);
             }
+            
+            public static void DrawThingIcon(Rect rect, Thing thing, float scale = 1f)
+            {
+                thing = thing.GetInnerIfMinified();
+                GUI.color = thing.DrawColor;
+                var resolvedIconAngle = 0.0f;
+                Texture resolvedIcon;
+                if (!thing.def.uiIconPath.NullOrEmpty())
+                {
+                    resolvedIcon = thing.def.uiIcon;
+                    resolvedIconAngle = thing.def.uiIconAngle;
+                    rect.position += new Vector2(thing.def.uiIconOffset.x * rect.size.x, thing.def.uiIconOffset.y * rect.size.y);
+                }
+                else
+                {
+                    switch (thing)
+                    {
+                        case Pawn _:
+                        case Corpse _:
+                            if (!(thing is Pawn pawn))
+                                pawn = ((Corpse) thing).InnerPawn;
+                            if (!pawn.RaceProps.Humanlike)
+                            {
+                                if (!pawn.Drawer.renderer.graphics.AllResolved)
+                                    pawn.Drawer.renderer.graphics.ResolveAllGraphics();
+                                var material = pawn.Drawer.renderer.graphics.nakedGraphic.MatAt(Rot4.East);
+                                resolvedIcon = material.mainTexture;
+                                GUI.color = material.color;
+                                break;
+                            }
+                            
+                            rect = rect.ScaledBy(1.8f);
+                            rect.y += 3f;
+                            rect = rect.Rounded();
+                            resolvedIcon = PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height));
+                            break;
+                        default:
+                            resolvedIcon = thing.Graphic.ExtractInnerGraphicFor(thing).MatAt(thing.def.defaultPlacingRot).mainTexture;
+                            break;
+                    }
+                }
+                
+                ThingIconWorker(rect, thing.def, resolvedIcon, resolvedIconAngle, scale);
+                GUI.color = Color.white;
+            }
+
+            private static void ThingIconWorker(
+                Rect rect,
+                ThingDef thingDef,
+                Texture resolvedIcon,
+                float resolvedIconAngle,
+                float scale = 1f)
+            {
+                var texProportions = new Vector2(resolvedIcon.width, resolvedIcon.height);
+                var texCoords = new Rect(0.0f, 0.0f, 1f, 1f);
+                if (thingDef.graphicData != null)
+                {
+                    texProportions = thingDef.graphicData.drawSize.RotatedBy(thingDef.defaultPlacingRot);
+                    if (thingDef.uiIconPath.NullOrEmpty() && thingDef.graphicData.linkFlags != LinkFlags.None)
+                        texCoords = new Rect(0.0f, 0.5f, 0.25f, 0.25f);
+                }
+                
+                Widgets.DrawTextureFitted(rect, resolvedIcon, GenUI.IconDrawScale(thingDef) * scale, texProportions, texCoords, resolvedIconAngle, (Material) null);
+            }
 
             public static void TryMakeFloatMenu(List<FloatMenuOption> options, string title)
             {
