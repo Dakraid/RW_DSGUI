@@ -4,6 +4,7 @@
     <author>Netrve</author>
     <supportedVersions>
         <li>1.1</li>
+        <li>1.2</li>
     </supportedVersions>
     <modDependencies>
         <li>
@@ -18,11 +19,15 @@
         </li>
     </modDependencies>
     <packageId>netrve.dsgui</packageId>
-    <description>Replaces DeepStorage's right click with a fancy new UI! Beta v1.0.0b25</description>
+    <description>Replaces DeepStorage's right click with a fancy new UI! Beta v1.2.0b33</description>
     <loadAfter>
         <li>brrainz.harmony</li>
         <li>ludeon.rimWorld</li>
         <li>ludeon.rimWorld.royalty</li>
+        <li>brrainz.achtung</li>
+        <li>rimfridge.kv.rw</li>
         <li>LWM.DeepStorage</li>
+        <li>jangodsoul.simplestorage</li>
+        <li>jangodsoul.simplystorage.ref</li>
     </loadAfter>
 </ModMetaData>

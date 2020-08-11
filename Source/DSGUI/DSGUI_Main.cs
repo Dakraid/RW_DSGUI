@@ -18,7 +18,7 @@ namespace DSGUI
     [StaticConstructorOnStartup]
     public static class DSGUIMain
     {
-        public static bool modSimplyLoaded => ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "[JDS] Simply Storage" || m.PackageId == "jangodsoul.simplystorage");
+        public static bool modSimplyLoaded => ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "[JDS] Simple Storage" || m.PackageId == "jangodsoul.simplestorage");
         
         static DSGUIMain()
         {
@@ -58,7 +58,7 @@ namespace DSGUI
             // var thingList = new List<Thing>(c.GetThingList(pawn.Map));
             List<Thing> thingList;
 
-            if (DSGUIMain.modSimplyLoaded && storageUnit.def.modContentPack.PackageId == "jangodsoul.simplystorage")
+            if (DSGUIMain.modSimplyLoaded && storageUnit.def.modContentPack.PackageId == "jangodsoul.simplestorage")
             {
                 var storageComp = (CompDeepStorage) storageUnit.AllComps.Find(x => x is CompDeepStorage);
                 thingList = new List<Thing>(storageComp.getContentsHeader(out _, out _));

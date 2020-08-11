@@ -11,11 +11,8 @@ Both come with options for sorting, customizable appearance, and search function
 #### Requires LWM DeepStorage
 
 ## Download
-Right now there is no Workshop release as this is still considered a Work-In-Progress.
-
-Nonetheless, preview builds can be found in the Azure Pipelines CI: 
-- Latest approved Artifact (Build 27): [RW_DSGUI_27.zip](https://bit.ly/2CGIgXv)
-Build 25 to 27 are technically the same, builds trigger on repo updates like description changes too.
+I recommend downloading the mod through the Workshop, if you can't please follow the instructions below this.
+- [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2169841018)
 
 Alternatively you can go for more recent, but not officially recommended downloads, following this:
 - Go to the Pipeline linked [here](https://dev.azure.com/Dakraid/RW_DSGUI/_build?definitionId=1)
