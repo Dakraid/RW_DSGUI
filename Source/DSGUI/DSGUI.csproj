@@ -53,6 +53,7 @@
       <PackageReference Include="UnlimitedHugs.Rimworld.HugsLib" Version="7.2.1">
           <PrivateAssets>all</PrivateAssets>
       </PackageReference>
+      <PackageReference Include="RimWorld.MultiplayerAPI" Version="0.2.0" />
     </ItemGroup>
     <ItemGroup>
       <Reference Include="IHoldMultipleThings, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null">

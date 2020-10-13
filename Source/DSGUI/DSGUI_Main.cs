@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LWM.DeepStorage;
+using Multiplayer.API;
 using UnityEngine;
 using Verse;
 
@@ -22,7 +23,8 @@ namespace DSGUI
         
         static DSGUIMain()
         {
-            // Placeholder
+            if (MP.enabled)
+                MP.RegisterAll();
         }
     }
 

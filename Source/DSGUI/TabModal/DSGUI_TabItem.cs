@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using LWM.DeepStorage;
+using Multiplayer.API;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -132,16 +133,7 @@ namespace DSGUI
                 var ejectRect = new Rect(xPos, heightPos, 24f, 24f);
                 TooltipHandler.TipRegion(ejectRect, "LWM.ContentsDropDesc".TranslateSimple());
                 if (Widgets.ButtonImage(ejectRect, dropIcon, Color.gray, Color.white, false))
-                {
-                    var loc = target.Position;
-                    var map = target.Map;
-                    target.DeSpawn();
-                    if (!GenPlace.TryPlaceThing(target, loc, map, ThingPlaceMode.Near, null,
-                        newLoc => !map.thingGrid.ThingsListAtFast(newLoc).OfType<Building_Storage>().Any())) GenSpawn.Spawn(target, loc, map);
-                    if (!target.Spawned || target.Position == loc)
-                        Messages.Message("You have filled the map.",
-                            new LookTargets(loc, map), MessageTypeDefOf.NegativeEvent);
-                }
+                    EjectTarget(target);
             }
 
             xPos += spacing + 24f;
@@ -166,6 +158,19 @@ namespace DSGUI
                 DSGUI.Elements.SeparatorHorizontal(0f, height * y, listRect.width);
             
             Text.Anchor = TextAnchor.UpperLeft;
+        }
+
+        [SyncMethod]
+        private static void EjectTarget(Thing target)
+        {
+            var loc = target.Position;
+            var map = target.Map;
+            target.DeSpawn();
+            if (!GenPlace.TryPlaceThing(target, loc, map, ThingPlaceMode.Near, null,
+                newLoc => !map.thingGrid.ThingsListAtFast(newLoc).OfType<Building_Storage>().Any())) GenSpawn.Spawn(target, loc, map);
+            if (!target.Spawned || target.Position == loc)
+                Messages.Message("You have filled the map.",
+                    new LookTargets(loc, map), MessageTypeDefOf.NegativeEvent);
         }
     }
 }
