@@ -59,7 +59,7 @@
         <HintPath>..\..\PrivateReferences\IHoldMultipleThings.dll</HintPath>
         <Private>False</Private>
       </Reference>
-      <Reference Include="LWM.DeepStorage, Version=1.0.0.41630, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="LWM.DeepStorage, Version=1.0.0.23856, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\PrivateReferences\LWM.DeepStorage.dll</HintPath>
           <Private>False</Private>
       </Reference>

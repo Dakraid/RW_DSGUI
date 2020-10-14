@@ -122,14 +122,11 @@ namespace DSGUI
             var spacing = (actionRect.width - 24 * 3) / 4;
             var xPos = actionRect.x + spacing;
             var heightPos = height * y + (height - 24f) / 2;
-
-            if (Settings.useEjectButton)
-            {
-                var ejectRect = new Rect(xPos, heightPos, 24f, 24f);
-                TooltipHandler.TipRegion(ejectRect, "LWM.ContentsDropDesc".TranslateSimple());
-                if (Widgets.ButtonImage(ejectRect, dropIcon, Color.gray, Color.white, false))
-                    EjectTarget(target);
-            }
+            
+            var ejectRect = new Rect(xPos, heightPos, 24f, 24f);
+            TooltipHandler.TipRegion(ejectRect, "LWM.ContentsDropDesc".TranslateSimple());
+            if (Widgets.ButtonImage(ejectRect, dropIcon, Color.gray, Color.white, false))
+                EjectTarget(target);
 
             xPos += spacing + 24f;
             var forbidRect = new Rect(xPos, heightPos, 24f, 24f);
