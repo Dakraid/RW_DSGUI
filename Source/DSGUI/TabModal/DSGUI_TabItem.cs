@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using HarmonyLib;
 using LWM.DeepStorage;
-using Multiplayer.API;
 using RimWorld;
-using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -160,7 +155,6 @@ namespace DSGUI
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        [SyncMethod]
         private static void EjectTarget(Thing target)
         {
             var loc = target.Position;
