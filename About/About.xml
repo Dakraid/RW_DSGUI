@@ -19,7 +19,7 @@
         </li>
     </modDependencies>
     <packageId>netrve.dsgui</packageId>
-    <description>Replaces DeepStorage's right click with a fancy new UI! Beta v1.2.0b33</description>
+    <description>Replaces DeepStorage's right click with a fancy new UI! Beta v1.2.1b37</description>
     <loadAfter>
         <li>brrainz.harmony</li>
         <li>ludeon.rimWorld</li>
