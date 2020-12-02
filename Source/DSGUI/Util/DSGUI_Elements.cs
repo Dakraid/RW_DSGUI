@@ -103,7 +103,7 @@ namespace DSGUI
                 _tempGuiContent.text = buff; 
                 _doTextFieldMethod.Invoke(null, new object[]
                 {
-                    rect, GUIUtility.GetControlID(name.GetHashCode(), FocusType.Keyboard), _tempGuiContent, false, max, Text.CurTextFieldStyle
+                    rect, 80000 + name.GetHashCode(), _tempGuiContent, false, max, Text.CurTextFieldStyle
                 });
 			    buff = _tempGuiContent.text;
 
