@@ -1,7 +1,7 @@
 ---
 name: Compatibility issue
 about: Report an incompatibility between this and another mod
-title: "[COMP]"
+title: "[COMP] Issue Title"
 labels: Compatibility
 assignees: Dakraid
 

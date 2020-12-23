@@ -1,8 +1,8 @@
 ---
 name: Other issues
 about: Input that doesn't fit into the other two
-title: "[MISC]"
-labels: ''
+title: "[MISC] Issue Title"
+labels: Investigation
 assignees: Dakraid
 
 ---
