@@ -13,12 +13,12 @@ name: "Code Analysis"
 
 on:
   push:
-    branches: [ develop, master ]
+    branches: [ master ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ develop ]
+    branches: [ develop, master ]
   schedule:
-    - cron: '29 5 * * 2'
+    - cron: '59 23 * * 0'
 
 jobs:
   analyze:
