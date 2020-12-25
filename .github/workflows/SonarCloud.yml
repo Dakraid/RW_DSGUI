@@ -63,6 +63,9 @@ jobs:
         New-Item -Path .\.sonar\scanner -ItemType Directory
         dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1
+
     - name: Cache
       uses: actions/cache@v2.1.3
       with:
