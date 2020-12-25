@@ -1,4 +1,4 @@
-name: MSBuild
+name: "Build RW_DSGUI [Debug, Release]"
 
 on: [push]
 
