@@ -14,7 +14,13 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Debug, Release'
+
+strategy:
+  matrix:
+    debug: 
+      BuildConfig: Debug
+    release: 
+      BuildConfig: Release
 
 steps:
 - task: PowerShell@2
@@ -42,7 +48,7 @@ steps:
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    configuration: '$(BuildConfig)'
     clean: true
     maximumCpuCount: true
 
@@ -54,7 +60,7 @@ steps:
      !**\obj\**
     codeCoverageEnabled: true
     platform: '$(BuildPlatform)'
-    configuration: '$(BuildConfiguration)'
+    configuration: '$(BuildConfig)'
 
 - task: SonarCloudAnalyze@1
 
