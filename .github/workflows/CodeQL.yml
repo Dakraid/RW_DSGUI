@@ -13,10 +13,10 @@ name: "Code Analysis - CodeQL"
 
 on:
   push:
-    branches: [ master ]
+    branches: [ develop, master ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ develop, master ]
+    branches: [ master ]
   schedule:
     - cron: '59 23 * * 0'
 
@@ -69,11 +69,8 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget-
 
-    - name: Build
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      # Add additional options to the MSBuild command line here (like platform or verbosity level).
-      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{matrix.configuration}} ${{env.SOLUTION_FILE_PATH}}
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v1
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
