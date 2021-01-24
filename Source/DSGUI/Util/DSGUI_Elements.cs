@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -62,6 +64,9 @@ namespace DSGUI
         [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
         public class Elements
         {
+            private static readonly GUIContent _tempGuiContent = new GUIContent();
+            private static readonly MethodInfo _doTextFieldMethod = AccessTools.Method(typeof(GUI), "DoTextField", new[] {typeof(Rect), typeof(int), typeof(GUIContent), typeof(bool), typeof(int), typeof(GUIStyle)});
+
             // Credits to Dubwise for this awesome function
             public static void InputField(
                 string name,
@@ -94,11 +99,18 @@ namespace DSGUI
                 }
 
                 GUI.SetNextControlName(name);
-                buff = GUI.TextField(rect, buff, max, Text.CurTextAreaStyle);
+
+                _tempGuiContent.text = buff; 
+                _doTextFieldMethod.Invoke(null, new object[]
+                {
+                    rect, 80000 + name.GetHashCode(), _tempGuiContent, false, max, Text.CurTextFieldStyle
+                });
+			    buff = _tempGuiContent.text;
+
                 var flag = GUI.GetNameOfFocusedControl() == name;
                 if (!flag & forceFocus)
                     GUI.FocusControl(name);
-                if (((!Input.GetMouseButtonDown(0) ? 0 : !Mouse.IsOver(rect) ? 1 : 0) & (flag ? 1 : 0)) != 0)
+                if (Input.GetMouseButtonDown(0) && !Mouse.IsOver(rect) && flag)
                     GUI.FocusControl(null);
                 
                 Text.Anchor = TextAnchor.UpperLeft;
