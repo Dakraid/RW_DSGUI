@@ -5,6 +5,7 @@
   <DSGUI_Warn>Incompatible with other mods patching FloatMenuMapMaker.TryMakeFloatMenu</DSGUI_Warn>
   
   <DSGUI_List_Label>Context Menu</DSGUI_List_Label>
+  <DSGUI_List_Tile>Tile Orders</DSGUI_List_Tile>
   <DSGUI_List_SortOrders>Sort Orders</DSGUI_List_SortOrders>
   <DSGUI_List_SavePosSize>Save last set window size and position</DSGUI_List_SavePosSize>
   <DSGUI_List_DrawDividersRows>Draw Divider Between Rows</DSGUI_List_DrawDividersRows>

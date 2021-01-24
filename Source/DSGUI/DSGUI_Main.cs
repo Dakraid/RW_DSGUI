@@ -66,6 +66,9 @@ namespace DSGUI
             {
                 thingList = new List<Thing>(c.GetThingList(pawn.Map));
             }
+
+            var tileThingList = new List<Thing>(thingList);
+            tileThingList.RemoveAll(t => t.def.category == ThingCategory.Item);
             
             thingList.RemoveAll(t => t.def.category != ThingCategory.Item || t is Mote);
 
@@ -75,7 +78,7 @@ namespace DSGUI
                 return true;
             }
 
-            Find.WindowStack.Add(new DSGUI_ListModal(pawn, thingList, clickPosition));
+            Find.WindowStack.Add(new DSGUI_ListModal(pawn, thingList, clickPosition, storageUnit, tileThingList));
             return false;
         }
     }

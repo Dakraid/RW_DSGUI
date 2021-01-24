@@ -124,6 +124,18 @@ namespace DSGUI
                 Text.Anchor = TextAnchor.UpperLeft;
             }
 
+            public static void DrawTextureFittedSized(Rect outerRect, Texture tex, float scale, float width, float height)
+            {
+                Widgets.DrawTextureFitted(outerRect, tex, scale, new Vector2(width, height), new Rect(0.0f, 0.0f, 1f, 1f));
+            }
+
+            public static void DrawIconFittedSized(Rect iconRect, Texture thingIcon, Color thingColor, float iconScale, float width, float height)
+            {
+                GUI.color = thingColor;
+                DrawTextureFittedSized(iconRect, thingIcon, iconScale, width, height);
+                GUI.color = Color.white;
+            }
+
             public static void DrawIconFitted(Rect iconRect, Texture thingIcon, Color thingColor, float iconScale)
             {
                 GUI.color = thingColor;
