@@ -32,7 +32,7 @@ namespace DSGUI
                 var target = Find.Selector.SelectedObjects.OfType<Pawn>()
                     .Where(pawn => pawn.IsColonistPlayerControlled && pawn.Downed == false).ToList();
     
-                if (target.EnumerableNullOrEmpty() || target.Count > 1)
+                if (target.OptimizedNullOrEmpty() || target.Count > 1)
                     return true;
 
                 if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
@@ -87,7 +87,7 @@ namespace DSGUI
 
                 if (t.Spawned && t is IStoreSettingsParent && t is ISlotGroupParent parent)
                 {
-                    foreach (var l in from c in parent.GetSlotGroup().CellsList
+                    foreach (var _ in from c in parent.GetSlotGroup().CellsList
                         select t.Map.thingGrid.ThingsListAt(c)
                         into l
                         from tmp in l.Where(tmp => tmp.def.EverStorable(false))
@@ -104,7 +104,7 @@ namespace DSGUI
                     }
                     catch (Exception e)
                     {
-                        Log.Warning("[DSGUI] Could mpt get DSGUI_TabModel, trying default. (" + e + ")");
+                        Log.Warning("[DSGUI] Could not get DSGUI_TabModel, trying default. (" + e + ")");
                     }
                 
                 if (tab == null)
@@ -114,9 +114,9 @@ namespace DSGUI
                     }
                     catch (Exception e)
                     {
-                        Log.Warning("[DSGUI] Could mpt get DSGUI_TabModel, trying default. (" + e + ")");
+                        Log.Warning("[DSGUI] Could not get ITab_DeepStorage_Inventory, trying default. (" + e + ")");
                     }
-                
+
                 if (tab == null)
                 {
                     Log.Error("[DSGUI] Deep Storage object " + t + " does not have an inventory tab?");
@@ -126,9 +126,9 @@ namespace DSGUI
                 tab.OnOpen();
                 pane.OpenTabType = tab switch
                 {
-                    DSGUI_TabModal _ => typeof(DSGUI_TabModal),
                     ITab_DeepStorage_Inventory _ => typeof(ITab_DeepStorage_Inventory),
-                    _ => typeof(ITab_Storage)
+                    DSGUI_TabModal _ => typeof(DSGUI_TabModal),
+                    _ => typeof(DSGUI_TabModal)
                 };
 
                 return false;

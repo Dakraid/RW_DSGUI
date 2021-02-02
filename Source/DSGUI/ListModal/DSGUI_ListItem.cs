@@ -56,12 +56,18 @@ namespace DSGUI
             var actionRect = listRect.RightPart(0.1f);
             actionRect.x -= 16;
             var iconRect = itemRect.LeftPart(0.15f).ContractedBy(2f);
-            var labelRect = itemRect.RightPart(0.85f);
+            var itemDescRect = itemRect.RightPart(0.85f);
+            var labelRect = itemDescRect.RightPart(0.85f);
+            // var indicatorRect = itemDescRect.LeftPart(0.15f).ContractedBy(2f);
 
             // Widgets.ThingIcon(iconRect, target);
             // DSGUI.Elements.DrawIconFitted(iconRect, thingIcon, thingColor, iconScale);
             DSGUI.Elements.DrawThingIcon(iconRect, target, iconScale);
             TooltipHandler.TipRegion(labelRect, (TipSignal) target.def.description);
+            if (target.Map.reservationManager.IsReservedByAnyoneOf(target, Faction.OfPlayer))
+            { 
+                // DSGUI.Elements.DrawIconFitted(iconRect, thingIcon, thingColor, iconScale);
+            }
 
             if (DSGUI.Elements.ButtonInvisibleLabeledFree(Color.white, GameFont.Small, itemRect.RightPart(0.85f), label.CapitalizeFirst(), style))
             {

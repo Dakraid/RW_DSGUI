@@ -30,7 +30,7 @@ namespace DSGUI
             public void CheckboxNonLabeled(ref bool checkOn, string tooltip = null, bool leftAligned = false)
             {
                 var rect = GetRect(Text.LineHeight);
-                if (!tooltip.NullOrEmpty())
+                if (!tooltip.OptimizedNullOrEmpty())
                 {
                     if (Mouse.IsOver(rect))
                         Widgets.DrawHighlight(rect);
@@ -226,7 +226,7 @@ namespace DSGUI
                 GUI.color = thing.DrawColor;
                 var resolvedIconAngle = 0.0f;
                 Texture resolvedIcon;
-                if (!thing.def.uiIconPath.NullOrEmpty())
+                if (!thing.def.uiIconPath.OptimizedNullOrEmpty())
                 {
                     resolvedIcon = thing.def.uiIcon;
                     resolvedIconAngle = thing.def.uiIconAngle;
@@ -277,11 +277,11 @@ namespace DSGUI
                 if (thingDef.graphicData != null)
                 {
                     texProportions = thingDef.graphicData.drawSize.RotatedBy(thingDef.defaultPlacingRot);
-                    if (thingDef.uiIconPath.NullOrEmpty() && thingDef.graphicData.linkFlags != LinkFlags.None)
+                    if (thingDef.uiIconPath.OptimizedNullOrEmpty() && thingDef.graphicData.linkFlags != LinkFlags.None)
                         texCoords = new Rect(0.0f, 0.5f, 0.25f, 0.25f);
                 }
                 
-                Widgets.DrawTextureFitted(rect, resolvedIcon, GenUI.IconDrawScale(thingDef) * scale, texProportions, texCoords, resolvedIconAngle, (Material) null);
+                Widgets.DrawTextureFitted(rect, resolvedIcon, GenUI.IconDrawScale(thingDef) * scale, texProportions, texCoords, resolvedIconAngle);
             }
 
             public static void TryMakeFloatMenu(List<FloatMenuOption> options, string title)

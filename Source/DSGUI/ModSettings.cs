@@ -18,7 +18,7 @@ namespace DSGUI
         public bool DSGUI_Tab_SortContent = true;
         public bool DSGUI_Tab_DrawDividersColumns = true;
         public bool DSGUI_Tab_DrawDividersRows = true;
-        public bool DSGUI_Tab_AdvSortContent = false;
+        public bool DSGUI_Tab_AdvSortContent;
         public int DSGUI_Tab_FontSize = 14;
         public int DSGUI_Tab_BoxHeight = 32;
         public float DSGUI_Tab_IconScaling = 1f;

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using LWM.DeepStorage;
 using UnityEngine;
@@ -17,7 +19,12 @@ namespace DSGUI
     [StaticConstructorOnStartup]
     public static class DSGUIMain
     {
-        public static bool modSimplyLoaded => ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "[JDS] Simple Storage" || m.PackageId == "jangodsoul.simplestorage");
+        public const string pidSimpleStorage = "jangodsoul.simplestorage";
+        public const string pidSimpleRefStorage = "jangodsoul.simplestorage.ref";
+        public const string pidRimFridge = "rimfridge.kv.rw";
+        public static bool modSimpleLoaded => ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "[JDS] Simple Storage" || m.PackageId == pidSimpleStorage);
+        public static bool modSimpleRefLoaded => ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "[JDS] Simple Storage - Refrigeration" || m.PackageId == pidSimpleRefStorage);
+        public static bool modRimFridgeLoaded => ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "[KV] RimFridge" || m.PackageId == pidRimFridge);
         
         static DSGUIMain()
         {
@@ -38,9 +45,8 @@ namespace DSGUI
             }
 
             var buildingList = StaticHelper.GetBuildings(c, pawn.Map).ToList();
-            // var building = c.GetFirstBuilding(pawn.Map);
 
-            if (buildingList.EnumerableNullOrEmpty())
+            if (buildingList.OptimizedNullOrEmpty())
             {
                 Log.Message("[DSGUI] Building List is empty.");
                 return true;
@@ -54,29 +60,28 @@ namespace DSGUI
                 return true;
             }
             
-            // var thingList = new List<Thing>(c.GetThingList(pawn.Map));
             List<Thing> thingList;
-
-            if (DSGUIMain.modSimplyLoaded && storageUnit.def.modContentPack.PackageId == "jangodsoul.simplestorage")
+            
+            if (DSGUIMain.modSimpleLoaded && storageUnit.def.modContentPack.PackageId == DSGUIMain.pidSimpleStorage ||
+                DSGUIMain.modSimpleRefLoaded && storageUnit.def.modContentPack.PackageId == DSGUIMain.pidSimpleRefStorage)
             {
                 var storageComp = (CompDeepStorage) storageUnit.AllComps.Find(x => x is CompDeepStorage);
                 thingList = new List<Thing>(storageComp.getContentsHeader(out _, out _));
-            }
-            else
+            } 
+            else 
             {
                 thingList = new List<Thing>(c.GetThingList(pawn.Map));
             }
-
-            var tileThingList = new List<Thing>(thingList);
-            tileThingList.RemoveAll(t => t.def.category == ThingCategory.Item);
             
-            thingList.RemoveAll(t => t.def.category != ThingCategory.Item || t is Mote);
-
-            if (thingList.EnumerableNullOrEmpty())
+            if (thingList.OptimizedNullOrEmpty())
             {
                 Log.Message("[DSGUI] Thing List is empty.");
                 return true;
             }
+            
+            var tileThingList = thingList.Where(t => t.def.category != ThingCategory.Item);
+            
+            thingList.RemoveAll(t => t.def.category != ThingCategory.Item || t is Mote);
 
             Find.WindowStack.Add(new DSGUI_ListModal(pawn, thingList, clickPosition, storageUnit, tileThingList));
             return false;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+    <Operation Class="PatchOperationFindMod">
+    <mods>
+        <li>[KV] RimFridge - 1.0</li>
+        <li>[KV] RimFridge - 1.1</li>
+    </mods>
+    <match  Class="PatchOperationFindMod">
+        <mods>
+            <li>[JDS] Simply Storage - Refrigeration</li>
+        </mods>
+        <match Class="PatchOperationConditional">
+            <xpath>/Defs/ThingDef[defName="LWM_DeepStorage"]/inspectorTabs/li[text()="LWM.DeepStorage.ITab_DeepStorage_Inventory"]</xpath>
+            <match Class="PatchOperationReplace">
+                <xpath>/Defs/ThingDef[defName="LWM_DeepStorage"]/inspectorTabs/li[text()="LWM.DeepStorage.ITab_DeepStorage_Inventory"]</xpath>
+                <value>
+                    <li>DSGUI.DSGUI_TabModal</li>
+                </value>
+            </match>
+        </match>
+    </match>
+    </Operation>
+</Patch>

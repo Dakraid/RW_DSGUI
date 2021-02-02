@@ -43,7 +43,7 @@ namespace DSGUI
             var slotCells = buildingStorage?.AllSlotCells().ToList();
             var thingGrid = Find.CurrentMap.thingGrid;
 
-            if (slotCells == null || thingGrid == null || slotCells.EnumerableNullOrEmpty())
+            if (slotCells == null || thingGrid == null || slotCells.OptimizedNullOrEmpty())
                 return null;
             
             slotCount = slotCells.Count;
@@ -81,7 +81,7 @@ namespace DSGUI
                 lastItems = new List<Thing>(storedItems);
             }
                 
-            if (storedItems.Count >= 1 && rows.NullOrEmpty())
+            if (storedItems.Count >= 1 && rows.OptimizedNullOrEmpty())
                 foreach (var thing in storedItems)
                     rows.Add(new DSGUI_TabItem(thing, Drop));
 

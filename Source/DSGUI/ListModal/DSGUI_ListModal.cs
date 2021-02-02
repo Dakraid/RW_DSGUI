@@ -24,8 +24,7 @@ namespace DSGUI
         private static Pawn pawn;
         private static Building self;
         private static List<Thing> thingList;
-        private static List<Thing> tileThingList;
-        
+
         private readonly Vector3 cpos;
         private readonly DSGUI_ListItem[] rows;
         private readonly List<FloatMenuOption> orders;
@@ -50,7 +49,7 @@ namespace DSGUI
             cpos = pos;
             pawn = p;
 
-            tileThingList = new List<Thing>(ltt);
+            var tileThingList = new List<Thing>(ltt);
             thingList = new List<Thing>(lt);
             rows = new DSGUI_ListItem[thingList.Count];
 

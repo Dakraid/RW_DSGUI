@@ -43,6 +43,7 @@
         <Compile Include="TabModal\DSGUI_TabItem.cs" />
         <Compile Include="TabModal\DSGUI_TabModal.cs" />
         <Compile Include="Util\DSGUI_Elements.cs" />
+        <Compile Include="Util\DSGUI_Functions.cs" />
         <Compile Include="Util\DSGUI_Harmony.cs" />
     </ItemGroup>
     <ItemGroup>

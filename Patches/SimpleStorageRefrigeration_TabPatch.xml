@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>[JDS] Simple Storage - Refrigeration</li>
+		</mods>
+		<match Class="PatchOperationConditional">
+			<xpath>/Defs/ThingDef[defName="FridgeBase"]/inspectorTabs/li[text()="ITab_Storage"]</xpath>
+			<match Class="PatchOperationReplace">
+				<xpath>/Defs/ThingDef[defName="FridgeBase"]/inspectorTabs/li[text()="ITab_Storage"]</xpath>
+				<value>
+					<li>DSGUI.DSGUI_TabModal</li>
+				</value>
+			</match>
+		</match>
+	</Operation>
+</Patch>
