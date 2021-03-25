@@ -46,22 +46,6 @@ namespace DSGUI {
                 Log.Message("[DSGUI] Pawn is not player controlled, downed, or on the current map. Handing execution to vanilla again.");
                 return true;
             }
-
-            if (ordersOnly) {
-                thingList     = new List<Thing>(c.GetThingList(pawn.Map));
-                tileThingList = thingList.Where(t => t.def.category != ThingCategory.Item).ToList();
-                // TODO: Move the entire ThingList trickery into its own function
-                var index = pawn.Map.cellIndices.CellToIndex(c);
-                var listArray = (List<Thing>[]) ThingListTG.GetValue(pawn.Map.thingGrid);
-                var origList  = new List<Thing>(listArray[index]);
-                listArray[index] = new List<Thing>(tileThingList);
-                var orders           = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {clickPosition, pawn});
-                listArray[index] = origList;
-                if (orders.Count <= 0) return true;
-
-                Elements.TryMakeFloatMenu(orders, "DSGUI_List_Tile".TranslateSimple());
-                return false;
-            }
             
             var buildingList = StaticHelper.GetBuildings(c, pawn.Map).ToList();
             if (buildingList.OptimizedNullOrEmpty()) {
@@ -87,6 +71,22 @@ namespace DSGUI {
             if (thingList.OptimizedNullOrEmpty()) {
                 Log.Message("[DSGUI] Thing List is empty. Handing execution to vanilla again.");
                 return true;
+            }
+
+            if (ordersOnly) {
+                thingList     = new List<Thing>(c.GetThingList(pawn.Map));
+                tileThingList = thingList.Where(t => t.def.category != ThingCategory.Item).ToList();
+                // TODO: Move the entire ThingList trickery into its own function
+                var index     = pawn.Map.cellIndices.CellToIndex(c);
+                var listArray = (List<Thing>[]) ThingListTG.GetValue(pawn.Map.thingGrid);
+                var origList  = new List<Thing>(listArray[index]);
+                listArray[index] = new List<Thing>(tileThingList);
+                var orders = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {clickPosition, pawn});
+                listArray[index] = origList;
+                if (orders.Count <= 0) return true;
+
+                Elements.TryMakeFloatMenu(orders, "DSGUI_List_Tile".TranslateSimple());
+                return false;
             }
 
             tileThingList = thingList.Where(t => t.def.category != ThingCategory.Item).ToList();
