@@ -47,7 +47,7 @@
         <Compile Include="Util\DSGUI_Harmony.cs" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Krafs.Rimworld.Ref" Version="1.2.2900" />
+      <PackageReference Include="Krafs.Rimworld.Ref" Version="1.2.2905" />
       <PackageReference Include="Lib.Harmony" Version="2.0.4">
           <PrivateAssets>all</PrivateAssets>
       </PackageReference>
