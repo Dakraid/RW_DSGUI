@@ -6,155 +6,183 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace DSGUI
-{
-    public class DSGUI_ListModal : Window
-    {
-        private const float searchClearPadding = 16f;
-        private static float boxHeight = 48f;
-        private static readonly Vector2 defaultScreenSize = new Vector2(1920, 1080);
-        private static readonly Vector2 modalSize = new Vector2(360, 480);
+namespace DSGUI {
+    public class DSGUI_ListModal : Window {
+        private const           float      SearchClearPadding = 8f;
+        private static readonly MethodInfo CAF                = AccessTools.Method(typeof(FloatMenuMakerMap), "ChoicesAtFor");
+        private static readonly FieldInfo  ThingListTG        = AccessTools.Field(typeof(ThingGrid), "thingGrid");
+        private static          float      _boxHeight         = 48f;
+        private static readonly Vector2    DefaultScreenSize  = new Vector2(1920, 1080);
+        private static readonly Vector2    ModalSize          = new Vector2(360, 480);
 
-        private static Vector2 scrollPosition;
-        private static float RecipesScrollHeight;
-        private static string searchString = "";
-        private static Pawn pawn;
-        private static List<Thing> thingList;
+        private static Vector2     _scrollPosition;
+        private static float       _recipesScrollHeight;
+        private static string      _searchString = "";
+        private static Pawn        _pawn;
+        private static Building    _self;
+        private static List<Thing> _thingList;
 
-        private static readonly FieldInfo thingListTG = AccessTools.Field(typeof(ThingGrid), "thingGrid");
+        private static readonly Texture2D MenuIcon = ContentFinder<Texture2D>.Get("UI/Buttons/MainButtons/Menu");
+        private static readonly Texture2D DragHash = ContentFinder<Texture2D>.Get("UI/Buttons/DragHash");
 
-        private readonly Vector3 cpos;
-        private readonly DSGUI_ListItem[] rows;
-        private Rect GizmoListRect;
+        private readonly Vector3               cpos;
+        private readonly List<FloatMenuOption> orders;
+        private readonly DSGUI_ListItem[]      rows;
+        private          Rect                  gizmoListRect;
 
-        public DSGUI_ListModal(Pawn p, IEnumerable<Thing> lt, Vector3 pos)
-        {
-            onlyOneOfTypeAllowed = true;
+        public DSGUI_ListModal(Pawn p, IEnumerable<Thing> lt, Vector3 pos, Building e, IEnumerable<Thing> ltt) {
+            onlyOneOfTypeAllowed  = true;
             closeOnClickedOutside = true;
-            doCloseX = true;
-            resizeable = true;
-            draggable = true;
-
+            doCloseX              = true;
+            resizeable            = true;
+            draggable             = true;
+            _self                 = e;
             if (p == null)
                 return;
 
-            cpos = pos;
-            pawn = p;
-
-            thingList = new List<Thing>(lt);
-            rows = new DSGUI_ListItem[thingList.Count];
-
-            boxHeight = DSGUIMod.settings.DSGUI_List_BoxHeight;
+            cpos  = pos;
+            _pawn = p;
+            // TODO: Move the entire ThingList trickery into its own function
+            var tileThingList = new List<Thing>(ltt);
+            _thingList = new List<Thing>(lt);
+            rows       = new DSGUI_ListItem[_thingList.Count];
+            var index     = _pawn.Map.cellIndices.CellToIndex(cpos.ToIntVec3());
+            var listArray = (List<Thing>[]) ThingListTG.GetValue(_pawn.Map.thingGrid);
+            var origList  = new List<Thing>(listArray[index]);
+            listArray[index] = new List<Thing>(tileThingList);
+            orders           = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {pos, _pawn});
+            listArray[index] = origList;
+            _boxHeight       = DSGUIMod.Settings.DSGUI_List_BoxHeight;
         }
 
-        public override Vector2 InitialSize => new Vector2(modalSize.x * (Screen.width / defaultScreenSize.x), modalSize.y * (Screen.height / defaultScreenSize.y));
+        protected override float Margin => 0f;
 
-        protected override void SetInitialSizeAndPosition()
-        {
-            if (!DSGUIMod.settings.DSGUI_List_SavePosSize)
-            {
+        public override Vector2 InitialSize => new Vector2(ModalSize.x * (Screen.width / DefaultScreenSize.x), ModalSize.y * (Screen.height / DefaultScreenSize.y));
+
+        protected override void SetInitialSizeAndPosition() {
+            if (!DSGUIMod.Settings.DSGUI_List_SavePosSize) {
                 base.SetInitialSizeAndPosition();
                 return;
             }
 
-            var windowSize = GlobalStorage.savedSize.Equals(new Vector2(0, 0)) ? InitialSize : GlobalStorage.savedSize;
-            var windowPos = new Vector2((float) ((UI.screenWidth - windowSize.x) / 2.0), (float) ((UI.screenHeight - windowSize.y) / 2.0));
-
-            if (!GlobalStorage.savedPos.Equals(new Vector2(0, 0)))
-                windowPos = GlobalStorage.savedPos;
+            var windowSize = GlobalStorage.SavedSize.Equals(new Vector2(0, 0)) ? InitialSize : GlobalStorage.SavedSize;
+            var windowPos  = new Vector2((float) ((UI.screenWidth - windowSize.x) / 2.0), (float) ((UI.screenHeight - windowSize.y) / 2.0));
+            if (!GlobalStorage.SavedPos.Equals(new Vector2(0, 0)))
+                windowPos = GlobalStorage.SavedPos;
 
             windowRect = new Rect(windowPos.x, windowPos.y, windowSize.x, windowSize.y);
             windowRect = windowRect.Rounded();
         }
 
-        public override void PreClose()
-        {
+        public override void PreClose() {
             base.PreClose();
-            GlobalStorage.savedSize = windowRect.size;
-            GlobalStorage.savedPos = windowRect.position;
+            GlobalStorage.SavedSize = windowRect.size;
+            GlobalStorage.SavedPos  = windowRect.position;
         }
 
 
-        public override void DoWindowContents(Rect inRect)
-        {
-            var innerRect = inRect;
-            innerRect.y += 8f;
-            innerRect.height -= 16f;
+        public override void DoWindowContents(Rect inRect) {
+            var style = new GUIStyle(Text.CurFontStyle) {
+                fontSize  = 16,
+                alignment = TextAnchor.MiddleCenter
+            };
 
-            GizmoListRect = innerRect.AtZero();
-            GizmoListRect.y += scrollPosition.y;
+            var moveRect = new Rect(4f, 4f, 18f, 18f);
+            DSGUI.Elements.DrawIconFitted(moveRect, DragHash, Color.white, 1.1f);
+            var titleX     = moveRect.x + moveRect.width + 32f;
+            var titleWidth = inRect.width - 60f - titleX;
+            var titleRect  = new Rect(titleX, 1f, titleWidth, 25f);
+            if (DSGUI.Elements.ButtonInvisibleLabeledFree(Color.white, GameFont.Medium, titleRect, _self.Label.CapitalizeFirst(), style)) {
+                if (_pawn.Map != _self.Map)
+                    return;
+
+                Find.Selector.ClearSelection();
+                Find.Selector.Select(_self);
+                Find.WindowStack.TryRemove(typeof(DSGUI_ListModal));
+            }
+
+            if (Mouse.IsOver(titleRect))
+                Widgets.DrawHighlight(titleRect);
+
+            DSGUI.Elements.SeparatorVertical(moveRect.x + moveRect.width + 32f, 0f, titleRect.height + 3f);
+            DSGUI.Elements.SeparatorVertical(inRect.width - 28f - 32f, 0f, titleRect.height + 3f);
+            inRect = inRect.ContractedBy(16f);
+            var innerRect = inRect;
+            innerRect.y      += 8f;
+            innerRect.height -= 16f;
+            gizmoListRect    =  innerRect.AtZero();
+            gizmoListRect.y  += _scrollPosition.y;
 
             // Scrollable List
             var scrollRect = new Rect(innerRect);
-            scrollRect.y += 3f;
-            scrollRect.x += 8f;
-            scrollRect.height -= 49f;
-            scrollRect.width -= 16f;
-
-            var viewRect = new Rect(0.0f, 0.0f, scrollRect.width, RecipesScrollHeight);
-
-            Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
+            scrollRect.y      += 3f;
+            scrollRect.x      += 8f;
+            scrollRect.height -= 50f;
+            scrollRect.width  -= 16f;
+            var viewRect = new Rect(0.0f, 0.0f, scrollRect.width, _recipesScrollHeight);
+            Widgets.BeginScrollView(scrollRect, ref _scrollPosition, viewRect);
             GUI.BeginGroup(viewRect);
-
-            for (var i = 0; i < thingList.Count; i++)
-            {
-                var viewElement = new Rect(0.0f, boxHeight * i, inRect.width, boxHeight);
-                if (!viewElement.Overlaps(GizmoListRect)) continue;
+            for (var i = 0; i < _thingList.Count; i++) {
+                var viewElement = new Rect(0.0f, _boxHeight * i, inRect.width, _boxHeight);
+                if (!viewElement.Overlaps(gizmoListRect)) continue;
 
                 if (rows[i] == null)
-                    try
-                    {
-                        var index = pawn.Map.cellIndices.CellToIndex(cpos.ToIntVec3());
-                        var listArray = (List<Thing>[]) thingListTG.GetValue(pawn.Map.thingGrid);
-                        var origList = new List<Thing>(listArray[index]);
-
-                        listArray[index] = new List<Thing> {thingList[i]};
-                        rows[i] = new DSGUI_ListItem(pawn, thingList[i], cpos, boxHeight);
+                    try {
+                        // TODO: Move the entire ThingList trickery into its own function
+                        var index     = _pawn.Map.cellIndices.CellToIndex(cpos.ToIntVec3());
+                        var listArray = (List<Thing>[]) ThingListTG.GetValue(_pawn.Map.thingGrid);
+                        var origList  = new List<Thing>(listArray[index]);
+                        listArray[index] = new List<Thing> {_thingList[i]};
+                        rows[i]          = new DSGUI_ListItem(_pawn, _thingList[i], cpos, _boxHeight);
                         listArray[index] = origList;
                     }
-                    catch (Exception ex)
-                    {
+                    catch (Exception ex) {
                         var rect5 = scrollRect.ContractedBy(-4f);
                         Widgets.Label(rect5, "Oops, something went wrong!");
                         Log.Warning(ex.ToString());
                     }
 
-
-                if (searchString.NullOrEmpty())
-                {
+                if (_searchString.NullOrEmpty()) {
                     rows[i].DoDraw(viewRect, i);
                 }
-                else
-                {
-                    if (!(rows[i].label.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0)) continue;
+                else {
+                    if (!(rows[i].Label.IndexOf(_searchString, StringComparison.OrdinalIgnoreCase) >= 0)) continue;
 
                     rows[i].DoDraw(viewRect, i);
                 }
             }
 
-
-            RecipesScrollHeight = boxHeight * thingList.Count;
-
+            _recipesScrollHeight = _boxHeight * _thingList.Count;
             GUI.EndGroup();
             Widgets.EndScrollView();
             Widgets.DrawBox(scrollRect);
+            var bottomToolRect = new Rect(scrollRect);
+            bottomToolRect.y      += scrollRect.height + 16f;
+            bottomToolRect.height =  28f;
 
             // Search
-            var searchRect = new Rect(innerRect);
-            searchRect.y += scrollRect.height + 16f;
-            searchRect.x += 8f;
-            searchRect.height = 28f;
-            searchRect.width -= 40f + searchClearPadding; // 16f for padding of 8f on each side + 28f for the clear button
-
-            DSGUI.Elements.InputField("Search", searchRect, ref searchString);
-
-            searchRect.x = searchRect.width + 6f + searchClearPadding;
-            searchRect.width = 28f;
+            var clearRect = new Rect(bottomToolRect) {width = 28f};
             Text.Anchor = TextAnchor.MiddleLeft;
-            if (Widgets.ButtonImageFitted(searchRect, Widgets.CheckboxOffTex))
-                searchString = "";
+            if (DSGUI.Elements.ButtonImageFittedScaled(clearRect, Widgets.CheckboxOffTex, 0.9f))
+                _searchString = "";
 
-            Text.Font = GameFont.Medium;
+            var searchFieldRect = new Rect(bottomToolRect);
+            searchFieldRect.x     += 28f + SearchClearPadding;
+            searchFieldRect.width -= 56f + SearchClearPadding * 2;
+            DSGUI.Elements.InputField("Search", searchFieldRect, ref _searchString);
+            var actionRect = new Rect(bottomToolRect) {x = bottomToolRect.x + bottomToolRect.width - 28f, width = 28f};
+            if (orders.Count > 0) {
+                if (DSGUI.Elements.ButtonImageFittedScaled(actionRect, MenuIcon, 1.4f)) DSGUI.Elements.TryMakeFloatMenu(orders, "DSGUI_List_Tile".TranslateSimple());
+            }
+            else {
+                DSGUI.Elements.DrawIconFitted(actionRect, MenuIcon, Color.gray, 1.4f);
+                TooltipHandler.TipRegion(actionRect, "No Orders Available");
+            }
+
+            if (Mouse.IsOver(actionRect))
+                Widgets.DrawHighlight(actionRect);
+
+            Text.Font   = GameFont.Medium;
             Text.Anchor = TextAnchor.UpperLeft;
         }
     }
