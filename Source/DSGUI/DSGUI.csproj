@@ -48,7 +48,7 @@
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Krafs.Rimworld.Ref" Version="1.2.2905" />
-      <PackageReference Include="Lib.Harmony" Version="2.1.0">
+      <PackageReference Include="Lib.Harmony" Version="2.1.1">
           <PrivateAssets>all</PrivateAssets>
       </PackageReference>
       <PackageReference Include="UnlimitedHugs.Rimworld.HugsLib" Version="8.0.0">
