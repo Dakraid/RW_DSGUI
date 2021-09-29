@@ -1,80 +1,77 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-    <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{A654330E-5D46-42EA-A59F-F26FD522EF89}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>DSGUI</RootNamespace>
-        <AssemblyName>DSGUI</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
-        <LangVersion>8</LangVersion>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>portable</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>..\..\Assemblies\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugType>portable</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>..\..\Assemblies\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <DebugSymbols>true</DebugSymbols>
-    </PropertyGroup>
-    <ItemGroup>
-        <Compile Include="DSGUI_Main.cs" />
-        <Compile Include="ListModal\DSGUI_ListItem.cs" />
-        <Compile Include="ListModal\DSGUI_ListModal.cs" />
-        <Compile Include="ModSettings.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="TabModal\DSGUI_TabItem.cs" />
-        <Compile Include="TabModal\DSGUI_TabModal.cs" />
-        <Compile Include="Util\DSGUI_Elements.cs" />
-        <Compile Include="Util\DSGUI_Functions.cs" />
-        <Compile Include="Util\DSGUI_Harmony.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <PackageReference Include="Krafs.Rimworld.Ref" Version="1.2.2905" />
-      <PackageReference Include="Lib.Harmony" Version="2.1.1">
-          <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
-      <PackageReference Include="UnlimitedHugs.Rimworld.HugsLib" Version="9.0.1">
-          <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
-    </ItemGroup>
-    <ItemGroup>
-      <Reference Include="IHoldMultipleThings, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\PrivateReferences\IHoldMultipleThings.dll</HintPath>
-        <Private>False</Private>
-      </Reference>
-      <Reference Include="LWM.DeepStorage, Version=1.0.0.23856, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\PrivateReferences\LWM.DeepStorage.dll</HintPath>
-          <Private>False</Private>
-      </Reference>
-    </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A654330E-5D46-42EA-A59F-F26FD522EF89}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DSGUI</RootNamespace>
+    <AssemblyName>DSGUI</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <LangVersion>8</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\1.3\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\1.3\Assemblies\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="DSGUI_Main.cs" />
+    <Compile Include="ListModal\DSGUI_ListItem.cs" />
+    <Compile Include="ListModal\DSGUI_ListModal.cs" />
+    <Compile Include="ModSettings.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TabModal\DSGUI_TabItem.cs" />
+    <Compile Include="TabModal\DSGUI_TabModal.cs" />
+    <Compile Include="Util\DSGUI_Elements.cs" />
+    <Compile Include="Util\DSGUI_Functions.cs" />
+    <Compile Include="Util\DSGUI_Harmony.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.3.3117" />
+    <PackageReference Include="Lib.Harmony" Version="2.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="UnlimitedHugs.Rimworld.HugsLib" Version="9.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="IHoldMultipleThings, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\PrivateReferences\IHoldMultipleThings.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="LWM.DeepStorage">
+      <HintPath>..\..\PrivateReferences\LWM.DeepStorage.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
     <Target Name="BeforeBuild">
     </Target>
     <Target Name="AfterBuild">
     </Target>
     -->
-    <Target Name="AfterBuild">
-        <Exec Command="del ..\..\Assemblies\0Harmony.dll" Condition=" '$(OS)' == 'Windows_NT' " />
-        <Exec Command="del ..\..\Assemblies\HugsLib.dll" Condition=" '$(OS)' == 'Windows_NT' " />
-    </Target>
 </Project>

@@ -21,7 +21,7 @@ namespace DSGUI {
         private readonly List<FloatMenuOption> orders;
         private readonly Pawn                  pawn;
         private readonly GUIStyle              style;
-        private readonly Thing                 target;
+        public readonly Thing                 Target;
 
         public DSGUI_ListItem(
             Pawn    p,
@@ -30,10 +30,10 @@ namespace DSGUI {
             float   boxHeight) {
             iconScale = DSGUIMod.Settings.DSGUI_List_IconScaling;
             height    = boxHeight;
-            target    = t.GetInnerIfMinified();
+            Target    = t.GetInnerIfMinified();
             Label     = t.Label;
             pawn      = p;
-            orders    = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {clickPos, pawn});
+            orders    = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {clickPos, pawn, false});
             style = new GUIStyle(Text.CurFontStyle) {
                 fontSize  = DSGUIMod.Settings.DSGUI_List_FontSize,
                 alignment = TextAnchor.MiddleCenter
@@ -55,18 +55,18 @@ namespace DSGUI {
 
             // Widgets.ThingIcon(iconRect, target);
             // DSGUI.Elements.DrawIconFitted(iconRect, thingIcon, thingColor, iconScale);
-            DSGUI.Elements.DrawThingIcon(iconRect, target, iconScale);
-            TooltipHandler.TipRegion(labelRect, (TipSignal) target.def.description);
-            if (target.Map.reservationManager.IsReservedByAnyoneOf(target, Faction.OfPlayer)) {
+            DSGUI.Elements.DrawThingIcon(iconRect, Target, iconScale);
+            TooltipHandler.TipRegion(labelRect, (TipSignal) Target.def.description);
+            if (Target.Map.reservationManager.IsReservedByAnyoneOf(Target, Faction.OfPlayer)) {
                 // DSGUI.Elements.DrawIconFitted(iconRect, thingIcon, thingColor, iconScale);
             }
 
             if (DSGUI.Elements.ButtonInvisibleLabeledFree(Color.white, GameFont.Small, itemRect.RightPart(0.85f), Label.CapitalizeFirst(), style)) {
-                if (pawn.Map != target.Map)
+                if (pawn.Map != Target.Map)
                     return;
 
                 Find.Selector.ClearSelection();
-                Find.Selector.Select(target);
+                Find.Selector.Select(Target);
                 Find.WindowStack.TryRemove(typeof(DSGUI_ListModal));
             }
 
@@ -74,7 +74,7 @@ namespace DSGUI {
                 Widgets.DrawHighlight(itemRect);
 
             if (orders.Count > 0) {
-                if (DSGUI.Elements.ButtonImageFittedScaled(actionRect, menuIcon, iconScale)) DSGUI.Elements.TryMakeFloatMenu(orders, target.LabelCapNoCount);
+                if (DSGUI.Elements.ButtonImageFittedScaled(actionRect, menuIcon, iconScale)) DSGUI.Elements.TryMakeFloatMenu(orders, Target.LabelCapNoCount);
             }
             else {
                 DSGUI.Elements.DrawIconFitted(actionRect, menuIcon, Color.gray, iconScale);

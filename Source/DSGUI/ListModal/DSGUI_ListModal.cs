@@ -7,6 +7,8 @@ using UnityEngine;
 using Verse;
 
 namespace DSGUI {
+    using System.Linq;
+
     public class DSGUI_ListModal : Window {
         private const           float      SearchClearPadding = 8f;
         private static readonly MethodInfo CAF                = AccessTools.Method(typeof(FloatMenuMakerMap), "ChoicesAtFor");
@@ -26,8 +28,8 @@ namespace DSGUI {
         private static readonly Texture2D DragHash = ContentFinder<Texture2D>.Get("UI/Buttons/DragHash");
 
         private readonly Vector3               cpos;
-        private readonly List<FloatMenuOption> orders;
-        private readonly DSGUI_ListItem[]      rows;
+        private List<FloatMenuOption> orders;
+        private DSGUI_ListItem[]      rows;
         private          Rect                  gizmoListRect;
 
         public DSGUI_ListModal(Pawn p, IEnumerable<Thing> lt, Vector3 pos, Building e, IEnumerable<Thing> ltt) {
@@ -50,7 +52,7 @@ namespace DSGUI {
             var listArray = (List<Thing>[]) ThingListTG.GetValue(_pawn.Map.thingGrid);
             var origList  = new List<Thing>(listArray[index]);
             listArray[index] = new List<Thing>(tileThingList);
-            orders           = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {pos, _pawn});
+            orders           = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {pos, _pawn, false});
             listArray[index] = origList;
             _boxHeight       = DSGUIMod.Settings.DSGUI_List_BoxHeight;
         }
@@ -86,6 +88,26 @@ namespace DSGUI {
                 fontSize  = 16,
                 alignment = TextAnchor.MiddleCenter
             };
+            
+            var c   = cpos.ToIntVec3();
+            var lt  = new List<Thing>(c.GetThingList(_pawn.Map));
+            var ltt = lt.Where(t => t.def.category != ThingCategory.Item).ToList();
+            lt.RemoveAll(t => t.def.category != ThingCategory.Item || t is Mote);
+
+            if (lt.Count != _thingList.Count || !lt.SequenceEqual(_thingList))
+            {
+                // TODO: Move the entire ThingList trickery into its own function
+                var tileThingList = new List<Thing>(ltt);
+                _thingList = new List<Thing>(lt);
+                rows       = new DSGUI_ListItem[_thingList.Count];
+                var index     = _pawn.Map.cellIndices.CellToIndex(cpos.ToIntVec3());
+                var listArray = (List<Thing>[]) ThingListTG.GetValue(_pawn.Map.thingGrid);
+                var origList  = new List<Thing>(listArray[index]);
+                listArray[index] = new List<Thing>(tileThingList);
+                orders           = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {cpos, _pawn, false});
+                listArray[index] = origList;
+                _boxHeight       = DSGUIMod.Settings.DSGUI_List_BoxHeight;
+            }
 
             var moveRect = new Rect(4f, 4f, 18f, 18f);
             DSGUI.Elements.DrawIconFitted(moveRect, DragHash, Color.white, 1.1f);
@@ -122,11 +144,12 @@ namespace DSGUI {
             var viewRect = new Rect(0.0f, 0.0f, scrollRect.width, _recipesScrollHeight);
             Widgets.BeginScrollView(scrollRect, ref _scrollPosition, viewRect);
             GUI.BeginGroup(viewRect);
+
             for (var i = 0; i < _thingList.Count; i++) {
                 var viewElement = new Rect(0.0f, _boxHeight * i, inRect.width, _boxHeight);
                 if (!viewElement.Overlaps(gizmoListRect)) continue;
 
-                if (rows[i] == null)
+                if (rows[i] == null) {
                     try {
                         // TODO: Move the entire ThingList trickery into its own function
                         var index     = _pawn.Map.cellIndices.CellToIndex(cpos.ToIntVec3());
@@ -138,17 +161,29 @@ namespace DSGUI {
                     }
                     catch (Exception ex) {
                         var rect5 = scrollRect.ContractedBy(-4f);
-                        Widgets.Label(rect5, "Oops, something went wrong!");
+                        Widgets.Label(rect5, "Failed to generate thing entry!");
                         Log.Warning(ex.ToString());
                     }
-
-                if (_searchString.NullOrEmpty()) {
-                    rows[i].DoDraw(viewRect, i);
                 }
-                else {
-                    if (!(rows[i].Label.IndexOf(_searchString, StringComparison.OrdinalIgnoreCase) >= 0)) continue;
 
-                    rows[i].DoDraw(viewRect, i);
+                try
+                {
+                    if (_searchString.NullOrEmpty())
+                    {
+                        rows[i].DoDraw(viewRect, i);
+                    }
+                    else
+                    {
+                        if (!(rows[i].Label.IndexOf(_searchString, StringComparison.OrdinalIgnoreCase) >= 0)) continue;
+
+                        rows[i].DoDraw(viewRect, i);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var rect5 = scrollRect.ContractedBy(-4f);
+                    Widgets.Label(rect5, "Failed to draw thing entry!");
+                    Log.Warning(ex.ToString());
                 }
             }
 

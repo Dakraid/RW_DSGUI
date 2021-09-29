@@ -55,8 +55,6 @@ namespace DSGUI {
                     return false;
 
                 var t = selectInst.SingleSelectedThing;
-                if (t == null)
-                    return false;
 
                 if (!(t is ThingWithComps))
                     return false;
@@ -83,7 +81,7 @@ namespace DSGUI {
                     tab = t.GetInspectTabs().OfType<ITab_Storage>().First();
                 }
 
-                EndLoop:
+            EndLoop:
                 if (tab == null && DSGUIMod.Settings.DSGUI_Tab_EnableTab)
                     try {
                         tab = t.GetInspectTabs().OfType<DSGUI_TabModal>().First();

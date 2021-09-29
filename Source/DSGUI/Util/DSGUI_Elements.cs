@@ -52,10 +52,24 @@ namespace DSGUI {
                 Gap(verticalSpacing);
                 return num;
             }
+
+            public void BeginScrollView(Rect rect, ref Vector2 scrollPosition, ref Rect viewRect)
+            {
+                Widgets.BeginScrollView(rect, ref scrollPosition, viewRect);
+                rect.height =  100000f;
+                rect.width  -= 20f;
+                this.Begin(rect.AtZero());
+            }
+
+            public void EndScrollView(ref Rect viewRect)
+            {
+                viewRect = new Rect(0.0f, 0.0f, this.listingRect.width, this.curY);
+                Widgets.EndScrollView();
+                this.End();
+            }
         }
 
         [UsedImplicitly]
-        [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
         public class Elements
         {
             private static readonly GUIContent _tempGuiContent = new GUIContent();
@@ -71,10 +85,9 @@ namespace DSGUI {
                 bool       readOnly   = false,
                 bool       forceFocus = false,
                 bool       showName   = false) {
-                Text.Font   = GameFont.Small;
-                Text.Anchor = TextAnchor.MiddleCenter;
-                if (buff == null)
-                    buff = "";
+                Text.Font   =   GameFont.Small;
+                Text.Anchor =   TextAnchor.MiddleCenter;
+                buff        ??= "";
 
                 if (icon != null) {
                     var outerRect = rect;
@@ -236,7 +249,7 @@ namespace DSGUI {
                             rect         =  rect.ScaledBy(1.8f);
                             rect.y       += 3f;
                             rect         =  rect.Rounded();
-                            resolvedIcon =  PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height));
+                            resolvedIcon =  PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height), pawn.Rotation);
                             break;
 
                         default:

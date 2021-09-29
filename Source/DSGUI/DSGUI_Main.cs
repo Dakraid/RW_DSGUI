@@ -81,7 +81,7 @@ namespace DSGUI {
                 var listArray = (List<Thing>[]) ThingListTG.GetValue(pawn.Map.thingGrid);
                 var origList  = new List<Thing>(listArray[index]);
                 listArray[index] = new List<Thing>(tileThingList);
-                var orders = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {clickPosition, pawn});
+                var orders = (List<FloatMenuOption>) CAF.Invoke(null, new object[] {clickPosition, pawn, false});
                 listArray[index] = origList;
                 if (orders.Count <= 0) return true;
 
