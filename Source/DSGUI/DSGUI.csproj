@@ -52,7 +52,7 @@
       <PrivateAssets>all</PrivateAssets>
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="UnlimitedHugs.Rimworld.HugsLib" Version="9.0.1">
+    <PackageReference Include="UnlimitedHugs.Rimworld.HugsLib" Version="10.0.1">
       <PrivateAssets>all</PrivateAssets>
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
